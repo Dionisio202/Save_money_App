@@ -27,6 +27,9 @@ import com.edisoninnovations.save_money.models.TransactionData
 import com.edisoninnovations.save_money.utils.LoadingDialog
 import com.edisoninnovations.save_money.utils.createImageFile
 import com.edisoninnovations.save_money.utils.getCurrentPhotoPath
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.Dispatchers
@@ -143,11 +146,20 @@ class AddTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, Ca
                             tiempo = formattedTime
                         )
 
-                        withContext(Dispatchers.IO) {
-                            val response = supabase.from("transacciones").insert(transactionData)
-
+                        val response = withContext(Dispatchers.IO) {
+                            supabase.from("transacciones").insert(transactionData) {
+                                select()
+                            }
                         }
+                        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+                        val type = Types.newParameterizedType(List::class.java, Map::class.java)
+                        val jsonAdapter = moshi.adapter<List<Map<String, Any>>>(type)
+                        val parsedData = jsonAdapter.fromJson(response.data.toString())
 
+                        parsedData?.let {
+                            val idTransaccion = it.first()["id_transaccion"] as? Double
+                            println("######################################### ID de la transacción: ${idTransaccion?.toInt()}")
+                        }
                         Toast.makeText(this@AddTransaction, "Transacción guardada", Toast.LENGTH_SHORT).show()
                         setResult(RESULT_OK)
                         finish()

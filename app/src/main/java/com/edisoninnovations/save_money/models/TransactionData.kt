@@ -9,3 +9,8 @@ data class TransactionData(
     val fecha: String,
     val tiempo: String
 )
+@kotlinx.serialization.Serializable
+data class Transimage(
+    val id_transaccion: Int,
+    val imagen: String
+)
