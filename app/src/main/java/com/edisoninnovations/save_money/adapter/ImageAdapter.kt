@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.edisoninnovations.save_money.R
 
 class ImageAdapter(
@@ -25,7 +26,11 @@ class ImageAdapter(
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         val imageUri = imageUris[position]
-        holder.imageView.setImageURI(imageUri)
+        Glide.with(context)
+            .load(imageUri)
+            .placeholder(R.drawable.placeholder_image)  // Puedes poner un drawable como placeholder
+            .error(R.drawable.error_image)  // Puedes poner un drawable para errores
+            .into(holder.imageView)
 
         holder.imageView.setOnClickListener {
             itemClickListener.onItemClick(imageUri)

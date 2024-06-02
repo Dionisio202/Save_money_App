@@ -1,0 +1,8 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@android:color/holo_red_dark"/>
+    <item>
+        <bitmap
+            android:gravity="center"
+            android:src="@android:drawable/ic_menu_close_clear_cancel" />
+    </item>
+</layer-list>

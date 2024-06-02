@@ -1,6 +1,7 @@
 package com.edisoninnovations.save_money.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import com.edisoninnovations.save_money.ImageDialogFragment
 import com.edisoninnovations.save_money.R
 import com.edisoninnovations.save_money.models.Transaction
 import androidx.fragment.app.FragmentActivity
+import com.edisoninnovations.save_money.EditTransaction
 
 class TransactionsAdapter(
     private val context: Context,
@@ -60,8 +62,19 @@ class TransactionsAdapter(
         }
 
         holder.editButton.setOnClickListener {
-            // Handle edit button click
+            val intent = Intent(context, EditTransaction::class.java)
+            intent.putExtra("id_transaccion", transaction.id_transaccion)
+            intent.putExtra("category", transaction.category)
+            intent.putExtra("amount", transaction.amount)
+            intent.putExtra("note", transaction.note)
+            intent.putExtra("tipo", transaction.tipo)
+
+            // Añadir las URLs de las imágenes
+            val imageUrlsArray = transaction.imageUrls?.toTypedArray()
+            intent.putExtra("imageUrls", imageUrlsArray)
+            context.startActivity(intent)
         }
+
     }
 
     override fun getItemCount(): Int {
