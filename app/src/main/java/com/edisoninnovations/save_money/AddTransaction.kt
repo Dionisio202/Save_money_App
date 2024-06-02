@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.edisoninnovations.save_money.DataManager.DateManager
 import com.edisoninnovations.save_money.models.TransactionData
+import com.edisoninnovations.save_money.models.Transimage
 import com.edisoninnovations.save_money.utils.LoadingDialog
 import com.edisoninnovations.save_money.utils.createImageFile
 import com.edisoninnovations.save_money.utils.getCurrentPhotoPath
@@ -32,14 +33,18 @@ import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.UUID
 
 class AddTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, CategoryDialogFragment.CategoryDialogListener {
 
@@ -158,7 +163,9 @@ class AddTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, Ca
 
                         parsedData?.let {
                             val idTransaccion = it.first()["id_transaccion"] as? Double
-                            println("######################################### ID de la transacción: ${idTransaccion?.toInt()}")
+                            idTransaccion?.let { id ->
+                                uploadImages(id.toInt())
+                            }
                         }
                         Toast.makeText(this@AddTransaction, "Transacción guardada", Toast.LENGTH_SHORT).show()
                         setResult(RESULT_OK)
@@ -176,10 +183,39 @@ class AddTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, Ca
                 Toast.makeText(this@AddTransaction, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
-            println("#####################Error al guardar la transacción: ${e.message}")
             Toast.makeText(this@AddTransaction, e.message, Toast.LENGTH_SHORT).show()
         } finally {
             loadingDialog.isDismiss()
+        }
+    }
+    private fun generateUniqueFileName(): String {
+        val timestamp = System.currentTimeMillis()
+        return "image_$timestamp.png"
+    }
+
+    private suspend fun uploadImages(transactionId: Int) {
+        val supabaseUrl = "https://zqiagwapnqwnfhehhqom.supabase.co"
+        imageUris.forEach { uri ->
+            val fileName = generateUniqueFileName()
+            val file = File(uri.path!!)
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    supabase.storage.from("imagenes").upload(fileName, file.readBytes())
+                }
+                val imageUrl = "$supabaseUrl/storage/v1/object/public/imagenes/$fileName" // URL completa de la imagen
+
+                val transImageData = Transimage(id_transaccion = transactionId, imagen = imageUrl)
+                println("#####################Transacción id: $transactionId")
+
+                // Insertar los datos en la tabla 'transimages'
+                val responseInsert = withContext(Dispatchers.IO) {
+                    supabase.from("transimages").insert(transImageData)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@AddTransaction, "Error al subir la imagen", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 

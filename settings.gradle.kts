@@ -7,16 +7,17 @@ pluginManagement {
                 includeGroupByRegex("androidx.*")
             }
         }
-        jcenter()
+        mavenCentral()
         gradlePluginPortal()
+        maven("https://jitpack.io") // Asegúrate de incluir JitPack si es necesario
     }
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        maven("https://jitpack.io")
         google()
-        jcenter()
+        mavenCentral()
+        maven("https://jitpack.io") // Asegúrate de incluir JitPack si es necesario
     }
 }
 
