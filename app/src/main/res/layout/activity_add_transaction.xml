@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/main"
+    android:background="#F9F9F9"
+    >
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="#314262"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Añadir transacción"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+
+        <ImageButton
+            android:id="@+id/camera_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/baseline_camera_alt_24"
+            app:tint="@android:color/white" />
+    </LinearLayout>
+
+    <!-- Amount Input -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="16dp"
+        android:layout_marginTop="12dp">
+
+        <EditText
+            android:id="@+id/amount_input"
+            android:layout_width="240dp"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:hint="0 $"
+            android:textColorHint="@android:color/black"
+            android:inputType="numberDecimal"
+            android:textSize="24sp"
+            android:textColor="@android:color/black"
+            android:background="@drawable/amount_border" />
+    </LinearLayout>
+
+    <!-- Choose Category Button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingTop="12dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="12dp">>
+
+        <FrameLayout
+            android:layout_width="325dp"
+            android:layout_height="35dp">
+
+            <ImageButton
+                android:id="@+id/category_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/amount_border"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="fitXY"/>
+
+            <TextView
+                android:id="@+id/category_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Elegir categoria"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"/>
+        </FrameLayout>
+    </LinearLayout>
+
+    <!-- Add Note Text Area -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="0dp">
+
+        <EditText
+            android:id="@+id/note_input"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:hint="Añadir nota"
+            android:textColorHint="@android:color/black"
+            android:inputType="textMultiLine"
+            android:gravity="top|start"
+            android:padding="8dp"
+            android:background="@drawable/amount_border"
+            android:scrollbars="vertical"/>
+    </LinearLayout>
+
+
+    <!-- RecyclerView para mostrar imágenes -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        tools:listitem="@layout/item_image" />
+
+    <!-- Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingTop="16dp">
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageButton
+                android:id="@+id/cancel_button"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/rectangular_buttonimage"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="fitXY"
+                android:contentDescription="Cerrar"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Cerrar"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageButton
+                android:id="@+id/save_button"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/rectangular_buttonimage"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="fitXY"
+                android:contentDescription="Guardar"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Guardar"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"/>
+        </FrameLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,225 @@
+package com.edisoninnovations.save_money
+
+import ImageAdapter
+import android.Manifest
+import android.content.ContentValues
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.text.Editable
+import android.text.InputFilter
+import android.text.TextWatcher
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.edisoninnovations.save_money.DataManager.DateManager
+import com.edisoninnovations.save_money.DataManager.insertarTransaccion
+import com.edisoninnovations.save_money.models.TransactionData
+import com.edisoninnovations.save_money.utils.LoadingDialog
+
+import com.edisoninnovations.save_money.utils.createImageFile
+import com.edisoninnovations.save_money.utils.getCurrentPhotoPath
+import io.github.jan.supabase.gotrue.auth
+import io.github.jan.supabase.gotrue.providers.builtin.Email
+import io.github.jan.supabase.postgrest.from
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
+
+class AddTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, CategoryDialogFragment.CategoryDialogListener {
+
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var imageAdapter: ImageAdapter
+    private val imageUris = ArrayList<Uri>()
+    private var isIncome: Boolean = false
+    private lateinit var categoryButton: ImageButton
+    private lateinit var loadingDialog: LoadingDialog
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContentView(R.layout.activity_add_transaction)
+        checkPermissions()
+        loadingDialog = LoadingDialog(this)
+        isIncome = intent.getBooleanExtra("isIncome", false)
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+        recyclerView = findViewById(R.id.recycler_view)
+        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        imageAdapter = ImageAdapter(imageUris, this, this)
+        recyclerView.adapter = imageAdapter
+
+        val amountInput: EditText = findViewById(R.id.amount_input)
+        amountInput.filters = arrayOf(InputFilter.LengthFilter(12))
+
+        val cameraButton: ImageButton = findViewById(R.id.camera_button)
+        cameraButton.setOnClickListener {
+            if (imageUris.size >= 3) {
+                Toast.makeText(this, "No puedes añadir más de 3 fotos", Toast.LENGTH_SHORT).show()
+            } else {
+                val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                if (takePictureIntent.resolveActivity(packageManager) != null) {
+                    val photoFile: File? = try {
+                        createImageFile(this)
+                    } catch (ex: IOException) {
+                        null
+                    }
+                    photoFile?.also {
+                        val photoURI: Uri = FileProvider.getUriForFile(
+                            this,
+                            "com.edisoninnovations.save_money.fileprovider",
+                            it
+                        )
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                    }
+                }
+            }
+        }
+
+        categoryButton = findViewById(R.id.category_button)
+        println("#######################Category Button Initialized: $categoryButton")
+        categoryButton.setOnClickListener {
+            showCategoryDialog()
+        }
+        val cancelButton: ImageButton = findViewById(R.id.cancel_button)
+        cancelButton.setOnClickListener {
+            finish()
+        }
+        val saveButton: ImageButton = findViewById(R.id.save_button)
+        val tipo = intent.getStringExtra("tipo")
+        saveButton.setOnClickListener {
+            val selectedDate = DateManager.selectedDate ?: "Fecha no seleccionada"
+            val userId = supabase.auth.currentUserOrNull()?.id
+            lifecycleScope.launch {
+                if (tipo != null) {
+                    saveTransaction(selectedDate, userId, tipo)
+                }
+            }
+        }
+    }
+
+    private suspend fun saveTransaction(selectedDate: String, userId: String? ,tipo: String) {
+        loadingDialog.startLoading()
+        try {
+            val amountInput: EditText = findViewById(R.id.amount_input)
+            val amount = amountInput.text.toString().toDoubleOrNull()
+            val categoryText: TextView = findViewById(R.id.category_text)
+            val category = categoryText.text.toString()
+            val descriptionInput: EditText = findViewById(R.id.note_input)
+            val note = descriptionInput.text.toString()
+
+            if (amount != null && userId != null) {
+                val currentTimeMillis = System.currentTimeMillis()
+                val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+                val formattedTime = timeFormat.format(Date(currentTimeMillis))
+
+                val transactionData = TransactionData(
+                    id_categoria = 1,
+                    nota = note,
+                    tipo = tipo,
+                    cantidad = amount,
+                    id_usuario = userId,
+                    fecha = selectedDate,
+                    tiempo = formattedTime
+                )
+
+                withContext(Dispatchers.IO) {
+                    val response = supabase.from("transacciones").insert(transactionData)
+
+                }
+
+                Toast.makeText(this@AddTransaction, "Transacción guardada", Toast.LENGTH_SHORT).show()
+                finish()
+            } else {
+                Toast.makeText(this@AddTransaction, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            println("#####################Error al guardar la transacción: ${e.message}")
+            Toast.makeText(this@AddTransaction, e.message, Toast.LENGTH_SHORT).show()
+        } finally {
+            loadingDialog.isDismiss()
+        }
+    }
+
+
+    private fun showCategoryDialog() {
+        println("#######################showCategoryDialog Called #######################")
+        val dialog = CategoryDialogFragment()
+        dialog.setIsIncome(isIncome)
+        dialog.show(supportFragmentManager, "CategoryDialog")
+    }
+
+    override fun onCategorySelected(category: String, categoryKey: Int) {
+        // Handle the selected category here
+
+        // Encuentra el TextView superpuesto en el ImageButton y actualiza su texto
+        val categoryText: TextView = findViewById(R.id.category_text)
+        categoryText.text = category
+    }
+
+    override fun onItemClick(uri: Uri) {
+        showImageDialog(uri.toString())
+    }
+
+    private fun showImageDialog(imageUrl: String) {
+        val dialogFragment = ImageDialogFragment.newInstance(imageUrl)
+        dialogFragment.show(supportFragmentManager, "image_dialog")
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE) {
+            val imageUri = Uri.fromFile(File(getCurrentPhotoPath()))
+            imageUris.add(imageUri)
+            imageAdapter.notifyItemInserted(imageUris.size - 1)
+        }
+    }
+
+    private fun checkPermissions() {
+        val permissions = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        val permissionsToRequest = mutableListOf<String>()
+
+        for (permission in permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                permissionsToRequest.add(permission)
+            }
+        }
+
+        if (permissionsToRequest.isNotEmpty()) {
+            ActivityCompat.requestPermissions(this, permissionsToRequest.toTypedArray(), PERMISSION_REQUEST_CODE)
+        }
+    }
+
+    companion object {
+        private const val PERMISSION_REQUEST_CODE = 100
+        private const val REQUEST_IMAGE_CAPTURE = 1
+    }
+}
