@@ -65,6 +65,7 @@ class HomeInformation : AppCompatActivity() {
             showAddTransactionDialog()
         }
     }
+
     private fun showAddTransactionDialog() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_transaction, null)
 
@@ -77,9 +78,8 @@ class HomeInformation : AppCompatActivity() {
             val intent = Intent(this@HomeInformation, AddTransaction::class.java)
             intent.putExtra("isIncome", true)
             intent.putExtra("tipo", "income")
-            startActivity(intent)
+            startActivityForResult(intent, REQUEST_CODE_ADD_TRANSACTION)
             alertDialog.dismiss()
-
         }
 
         dialogView.findViewById<ImageButton>(R.id.add_expense_button).setOnClickListener {
@@ -87,7 +87,7 @@ class HomeInformation : AppCompatActivity() {
             val intent = Intent(this@HomeInformation, AddTransaction::class.java)
             intent.putExtra("isIncome", false)
             intent.putExtra("tipo", "expense")
-            startActivity(intent)
+            startActivityForResult(intent, REQUEST_CODE_ADD_TRANSACTION)
             alertDialog.dismiss()
         }
 
@@ -97,6 +97,18 @@ class HomeInformation : AppCompatActivity() {
 
         alertDialog.show()
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_ADD_TRANSACTION && resultCode == RESULT_OK) {
+            val selectedDate = DateManager.selectedDate ?: "Fecha no seleccionada"
+            val userId = supabase.auth.currentUserOrNull()?.id
+            if (userId != null) {
+                loadTransactions(selectedDate, userId)
+            }
+        }
+    }
+
     private fun loadTransactions(fecha: String, idUsuario: String) {
         CoroutineScope(Dispatchers.Main).launch {
             val fetchedTransactions = obtenerTransacciones(fecha, idUsuario)
@@ -115,6 +127,7 @@ class HomeInformation : AppCompatActivity() {
             }
         }
     }
+
     private fun formatDate(dateString: String): String {
         return try {
             val inputFormat = SimpleDateFormat("yyyy-M-d", Locale("es", "ES"))
@@ -133,5 +146,9 @@ class HomeInformation : AppCompatActivity() {
         transactions.clear()
         transactions.addAll(newTransactions)
         adapter.notifyDataSetChanged()
+    }
+
+    companion object {
+        private const val REQUEST_CODE_ADD_TRANSACTION = 1
     }
 }

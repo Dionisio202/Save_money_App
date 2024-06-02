@@ -2,18 +2,12 @@ package com.edisoninnovations.save_money
 
 import ImageAdapter
 import android.Manifest
-import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
-import android.text.Editable
 import android.text.InputFilter
-import android.text.TextWatcher
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
@@ -29,16 +23,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.edisoninnovations.save_money.DataManager.DateManager
-import com.edisoninnovations.save_money.DataManager.insertarTransaccion
 import com.edisoninnovations.save_money.models.TransactionData
 import com.edisoninnovations.save_money.utils.LoadingDialog
-
 import com.edisoninnovations.save_money.utils.createImageFile
 import com.edisoninnovations.save_money.utils.getCurrentPhotoPath
 import io.github.jan.supabase.gotrue.auth
-import io.github.jan.supabase.gotrue.providers.builtin.Email
 import io.github.jan.supabase.postgrest.from
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -48,7 +38,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-
 class AddTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, CategoryDialogFragment.CategoryDialogListener {
 
     private lateinit var recyclerView: RecyclerView
@@ -57,6 +46,8 @@ class AddTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, Ca
     private var isIncome: Boolean = false
     private lateinit var categoryButton: ImageButton
     private lateinit var loadingDialog: LoadingDialog
+    private var selectedCategoryId: Int = -1 // Default category ID
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -105,7 +96,6 @@ class AddTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, Ca
         }
 
         categoryButton = findViewById(R.id.category_button)
-        println("#######################Category Button Initialized: $categoryButton")
         categoryButton.setOnClickListener {
             showCategoryDialog()
         }
@@ -126,7 +116,7 @@ class AddTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, Ca
         }
     }
 
-    private suspend fun saveTransaction(selectedDate: String, userId: String? ,tipo: String) {
+    private suspend fun saveTransaction(selectedDate: String, userId: String?, tipo: String) {
         loadingDialog.startLoading()
         try {
             val amountInput: EditText = findViewById(R.id.amount_input)
@@ -136,28 +126,40 @@ class AddTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, Ca
             val descriptionInput: EditText = findViewById(R.id.note_input)
             val note = descriptionInput.text.toString()
 
-            if (amount != null && userId != null) {
-                val currentTimeMillis = System.currentTimeMillis()
-                val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-                val formattedTime = timeFormat.format(Date(currentTimeMillis))
+            if (amount != null && userId != null && category.isNotEmpty() ) {
+                if(amount>0){
+                    if(selectedCategoryId != -1){
+                        val currentTimeMillis = System.currentTimeMillis()
+                        val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+                        val formattedTime = timeFormat.format(Date(currentTimeMillis))
 
-                val transactionData = TransactionData(
-                    id_categoria = 1,
-                    nota = note,
-                    tipo = tipo,
-                    cantidad = amount,
-                    id_usuario = userId,
-                    fecha = selectedDate,
-                    tiempo = formattedTime
-                )
+                        val transactionData = TransactionData(
+                            id_categoria = selectedCategoryId,
+                            nota = note,
+                            tipo = tipo,
+                            cantidad = amount,
+                            id_usuario = userId,
+                            fecha = selectedDate,
+                            tiempo = formattedTime
+                        )
 
-                withContext(Dispatchers.IO) {
-                    val response = supabase.from("transacciones").insert(transactionData)
+                        withContext(Dispatchers.IO) {
+                            val response = supabase.from("transacciones").insert(transactionData)
 
+                        }
+
+                        Toast.makeText(this@AddTransaction, "Transacción guardada", Toast.LENGTH_SHORT).show()
+                        setResult(RESULT_OK)
+                        finish()
+                    }else{
+                        Toast.makeText(this@AddTransaction, "Por favor, seleccione una categoría", Toast.LENGTH_SHORT).show()
+                    }
+
+                }else{
+                    Toast.makeText(this@AddTransaction, "La cantidad debe ser mayor a 0", Toast.LENGTH_SHORT).show()
                 }
 
-                Toast.makeText(this@AddTransaction, "Transacción guardada", Toast.LENGTH_SHORT).show()
-                finish()
+
             } else {
                 Toast.makeText(this@AddTransaction, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show()
             }
@@ -169,20 +171,16 @@ class AddTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, Ca
         }
     }
 
-
     private fun showCategoryDialog() {
-        println("#######################showCategoryDialog Called #######################")
         val dialog = CategoryDialogFragment()
         dialog.setIsIncome(isIncome)
         dialog.show(supportFragmentManager, "CategoryDialog")
     }
 
     override fun onCategorySelected(category: String, categoryKey: Int) {
-        // Handle the selected category here
-
-        // Encuentra el TextView superpuesto en el ImageButton y actualiza su texto
         val categoryText: TextView = findViewById(R.id.category_text)
         categoryText.text = category
+        selectedCategoryId = categoryKey
     }
 
     override fun onItemClick(uri: Uri) {
