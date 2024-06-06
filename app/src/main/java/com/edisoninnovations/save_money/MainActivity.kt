@@ -89,8 +89,14 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this@MainActivity, Home::class.java)
                 startActivity(intent)
             } catch (e: Exception) {
-                println("Error al iniciar sesión: ${e.message}")
-                Toast.makeText(this@MainActivity, e.message, Toast.LENGTH_SHORT).show()
+                val errorMessage = when {
+                    e.message?.contains("Invalid login credentials") == true -> "Credenciales de inicio de sesión inválidas"
+                    e.message?.contains("Network error") == true -> "Error de red"
+                    e.message?.contains("Email not confirmed") == true ->  "Por favor confirma tu correo electrónico"
+                    else -> e.message
+                }
+
+                Toast.makeText(this@MainActivity, errorMessage, Toast.LENGTH_SHORT).show()
             } finally {
                 loadingDialog.isDismiss()
             }

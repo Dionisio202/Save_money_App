@@ -51,7 +51,12 @@ class TransactionsAdapter(
                 layoutParams.setMargins(10, 0, 10, 0) // Add margin between images
                 imageView.layoutParams = layoutParams
                 imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-                Glide.with(context).load(imageUrl).into(imageView)
+                Glide.with(context)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.placeholder_image)  // Drawable para placeholder
+                    .error(R.drawable.error_image)  // Drawable para error
+                    .into(imageView)
+
                 imageView.setOnClickListener {
                     val activity = context as FragmentActivity
                     val dialog = ImageDialogFragment.newInstance(imageUrl)

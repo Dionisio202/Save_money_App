@@ -55,7 +55,7 @@ class EditTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, C
     private lateinit var categoryButton: ImageButton
     private lateinit var loadingDialog: LoadingDialog
     private var selectedCategoryId: Int = -1 // Default category ID
-
+    private lateinit var transactionId: String;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -66,6 +66,9 @@ class EditTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, C
 
         // Recuperar datos del Intent
         val transactionId = intent.getStringExtra("id_transaccion")
+        if (transactionId != null) {
+            this.transactionId = transactionId
+        }
         val category = intent.getStringExtra("category")
         val amount = intent.getDoubleExtra("amount", 0.0)
         val note = intent.getStringExtra("note")
@@ -147,12 +150,14 @@ class EditTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, C
             val userId = supabase.auth.currentUserOrNull()?.id
             lifecycleScope.launch {
                 if (tipo != null) {
+                    println("############################transacion id: $transactionId")
                     println("########################selectedDate: $selectedDate")
-                    //editTransaction(selectedDate, userId, tipo)
+                    editTransaction(selectedDate, userId, tipo)
                 }
             }
         }
     }
+
 
     private suspend fun editTransaction(selectedDate: String, userId: String?, tipo: String) {
         loadingDialog.startLoading()
@@ -182,10 +187,15 @@ class EditTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, C
                         )
 
                         val response = withContext(Dispatchers.IO) {
-                            supabase.from("transacciones").insert(transactionData) {
+                            supabase.from("transacciones").update(transactionData) {
+                                filter {
+                                    eq("id_transaccion", transactionId)
+                                }
                                 select()
                             }
                         }
+                        val data = response.data
+                        println("#######################################datos $data")
                         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
                         val type = Types.newParameterizedType(List::class.java, Map::class.java)
                         val jsonAdapter = moshi.adapter<List<Map<String, Any>>>(type)
@@ -194,7 +204,7 @@ class EditTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, C
                         parsedData?.let {
                             val idTransaccion = it.first()["id_transaccion"] as? Double
                             idTransaccion?.let { id ->
-                                uploadImages(id.toInt())
+                              //  uploadImages(id.toInt())
                             }
                         }
                         Toast.makeText(this@EditTransaction, "Transacción guardada", Toast.LENGTH_SHORT).show()

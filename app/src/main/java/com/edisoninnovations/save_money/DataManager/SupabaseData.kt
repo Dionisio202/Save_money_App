@@ -31,7 +31,7 @@ suspend fun obtenerTransacciones(fecha: String, idUsuario: String): List<Transac
                 }
             }
 
-            println("########################################################################response: " + response.data)
+            println("##########################################Obteniedo dartos HomeInformation")
 
             // Utilizar Moshi para parsear la respuesta JSON
             val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()

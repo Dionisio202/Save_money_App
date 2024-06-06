@@ -57,7 +57,6 @@ class HomeInformation : AppCompatActivity() {
         // Load transactions (example data, replace with real data fetching logic)
         if (userId != null) {
             loadTransactions(selectedDate, userId)
-            println("###############################selectedDate: $selectedDate")
         }
         // Set up Add Transaction Button
         val addTransactionButton: ImageButton = findViewById(R.id.add_transaction_button)
@@ -97,14 +96,20 @@ class HomeInformation : AppCompatActivity() {
 
         alertDialog.show()
     }
+    private fun finishWithResult() {
+        val intent = Intent()
+        setResult(RESULT_OK, intent)
 
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_ADD_TRANSACTION && resultCode == RESULT_OK) {
+        if ((requestCode == REQUEST_CODE_ADD_TRANSACTION || requestCode == REQUEST_CODE_EDIT_TRANSACTION) && resultCode == RESULT_OK) {
             val selectedDate = DateManager.selectedDate ?: "Fecha no seleccionada"
             val userId = supabase.auth.currentUserOrNull()?.id
             if (userId != null) {
                 loadTransactions(selectedDate, userId)
+                finishWithResult()
+
             }
         }
     }
@@ -150,5 +155,7 @@ class HomeInformation : AppCompatActivity() {
 
     companion object {
         private const val REQUEST_CODE_ADD_TRANSACTION = 1
+        private const val REQUEST_CODE_EDIT_TRANSACTION = 2
+
     }
 }

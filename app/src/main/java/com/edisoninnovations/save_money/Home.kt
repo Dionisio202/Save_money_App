@@ -73,8 +73,22 @@ class Home : AppCompatActivity() {
             DateManager.selectedDate = selectedDate
             println("Fecha seleccionada: $selectedDate")
             val intent = Intent(this@Home, HomeInformation::class.java)
-            startActivity(intent)
+            startActivityForResult(intent, REQUEST_CODE_HOME_INFORMATION)
+
         }
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_HOME_INFORMATION && resultCode == RESULT_OK) {
+            val userId = supabase.auth.currentUserOrNull()?.id
+            if (userId != null) {
+                getDataTransacctions(userId)
+            }
+        }
+    }
+
+    companion object {
+        private const val REQUEST_CODE_HOME_INFORMATION = 2
     }
 
     private fun changeYear(offset: Int) {
@@ -127,6 +141,7 @@ class Home : AppCompatActivity() {
         if (userId.trim().isNotEmpty()) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
+                    print("################################Obteniendo dataHome################################")
                     val response = supabase.from("transacciones").select(columns = Columns.list("cantidad", "tipo")) {
                         filter {
                             eq("id_usuario", userId)
