@@ -6,5 +6,6 @@ data class Transaction(
     val amount: Double,
     val note: String,
     val tipo: String,
-    val imageUrls: List<String>?
+    val imageUrls: List<String>?,
+   // val CategoriaId:Int
 )

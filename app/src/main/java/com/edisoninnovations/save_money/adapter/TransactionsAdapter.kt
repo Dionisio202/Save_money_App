@@ -67,7 +67,8 @@ class TransactionsAdapter(
         }
 
         holder.editButton.setOnClickListener {
-            val intent = Intent(context, EditTransaction::class.java)
+            val activity = context as FragmentActivity
+            val intent = Intent(activity, EditTransaction::class.java)
             intent.putExtra("id_transaccion", transaction.id_transaccion)
             intent.putExtra("category", transaction.category)
             intent.putExtra("amount", transaction.amount)
@@ -77,9 +78,8 @@ class TransactionsAdapter(
             // Añadir las URLs de las imágenes
             val imageUrlsArray = transaction.imageUrls?.toTypedArray()
             intent.putExtra("imageUrls", imageUrlsArray)
-            context.startActivity(intent)
+            activity.startActivityForResult(intent, REQUEST_CODE_EDIT_TRANSACTION)
         }
-
     }
 
     override fun getItemCount(): Int {
@@ -92,5 +92,9 @@ class TransactionsAdapter(
         val transactionNote: TextView = itemView.findViewById(R.id.transaction_note)
         val imageContainer: LinearLayout = itemView.findViewById(R.id.image_container)
         val editButton: ImageButton = itemView.findViewById(R.id.edit_button)
+    }
+
+    companion object {
+        const val REQUEST_CODE_EDIT_TRANSACTION = 2
     }
 }

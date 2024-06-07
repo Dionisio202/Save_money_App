@@ -104,6 +104,7 @@ class HomeInformation : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if ((requestCode == REQUEST_CODE_ADD_TRANSACTION || requestCode == REQUEST_CODE_EDIT_TRANSACTION) && resultCode == RESULT_OK) {
+
             val selectedDate = DateManager.selectedDate ?: "Fecha no seleccionada"
             val userId = supabase.auth.currentUserOrNull()?.id
             if (userId != null) {

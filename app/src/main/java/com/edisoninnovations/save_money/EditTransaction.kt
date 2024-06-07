@@ -22,6 +22,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.edisoninnovations.save_money.DataManager.CategoryManager
 import com.edisoninnovations.save_money.DataManager.DateManager
 import com.edisoninnovations.save_money.models.TransactionData
 import com.edisoninnovations.save_money.models.Transimage
@@ -56,6 +57,8 @@ class EditTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, C
     private lateinit var loadingDialog: LoadingDialog
     private var selectedCategoryId: Int = -1 // Default category ID
     private lateinit var transactionId: String;
+    private lateinit var originalImageUris: List<Uri>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -73,11 +76,16 @@ class EditTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, C
         val amount = intent.getDoubleExtra("amount", 0.0)
         val note = intent.getStringExtra("note")
         val tipos= intent.getStringExtra("tipo")
+
+
         if(tipos=="expense"){
             isIncome = false
         }else{
             isIncome = true
         }
+        // Obtener el ID de la categoría
+        val categoryId = category?.let { CategoryManager.getCategoryID(it, isIncome) }
+        selectedCategoryId = categoryId ?: -1
         val imageUrls = intent.getStringArrayExtra("imageUrls")?.toList() ?: emptyList()
 
         // Configurar los campos con los datos recibidos
@@ -95,6 +103,7 @@ class EditTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, C
         imageUris.clear()
         imageUris.addAll(imageUrls.map { Uri.parse(it) })
         imageAdapter.notifyDataSetChanged()
+        originalImageUris = imageUris.toList()
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -171,7 +180,7 @@ class EditTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, C
 
             if (amount != null && userId != null && category.isNotEmpty() ) {
                 if(amount>0){
-                    if(selectedCategoryId != -1){
+                   
                         val currentTimeMillis = System.currentTimeMillis()
                         val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
                         val formattedTime = timeFormat.format(Date(currentTimeMillis))
@@ -204,15 +213,27 @@ class EditTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, C
                         parsedData?.let {
                             val idTransaccion = it.first()["id_transaccion"] as? Double
                             idTransaccion?.let { id ->
-                              //  uploadImages(id.toInt())
+                                if(originalImageUris!=imageUris){
+                                    // Obtener imágenes eliminadas
+                                    val deletedImages = originalImageUris.filter { it !in imageUris }
+                                    // Obtener imágenes añadidas
+                                    val addedImages = imageUris.filter { it !in originalImageUris }
+
+                                    // Eliminar imágenes eliminadas del almacenamiento
+                                    deletedImages.forEach { uri ->
+                                        deleteImage(uri,id.toInt())
+                                    }
+
+                                    // Subir imágenes añadidas
+                                    uploadImages(id.toInt(), addedImages)
+                                }
+
                             }
                         }
                         Toast.makeText(this@EditTransaction, "Transacción guardada", Toast.LENGTH_SHORT).show()
                         setResult(RESULT_OK)
                         finish()
-                    }else{
-                        Toast.makeText(this@EditTransaction, "Por favor, seleccione una categoría", Toast.LENGTH_SHORT).show()
-                    }
+
 
                 }else{
                     Toast.makeText(this@EditTransaction, "La cantidad debe ser mayor a 0", Toast.LENGTH_SHORT).show()
@@ -224,6 +245,7 @@ class EditTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, C
             }
         } catch (e: Exception) {
             Toast.makeText(this@EditTransaction, e.message, Toast.LENGTH_SHORT).show()
+            println("#######################################error $e")
         } finally {
             loadingDialog.isDismiss()
         }
@@ -232,23 +254,46 @@ class EditTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, C
         val timestamp = System.currentTimeMillis()
         return "image_$timestamp.png"
     }
+    private suspend fun deleteImage(uri: Uri ,transactionId: Int,) {
+        val fileName = uri.lastPathSegment ?: return
+        val imageUrl = "https://zqiagwapnqwnfhehhqom.supabase.co/storage/v1/object/public/imagenes/$fileName"
+        try {
+            withContext(Dispatchers.IO) {
+                supabase.storage.from("imagenes").delete(fileName)
+            }
+            // Eliminar la referencia de la imagen de la tabla transimages
+            val transImageData = Transimage(id_transaccion = transactionId, imagen = imageUrl)
+            withContext(Dispatchers.IO) {
+                supabase.from("transimages").delete {
+                    filter {
+                        eq("id_transaccion", transactionId)
+                        eq("imagen", imageUrl)
+                    }
+                }
 
-    private suspend fun uploadImages(transactionId: Int) {
+            }
+            withContext(Dispatchers.Main) {
+                Toast.makeText(this@EditTransaction, "Imagen eliminada correctamente", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            withContext(Dispatchers.Main) {
+                Toast.makeText(this@EditTransaction, "Error al eliminar la imagen", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    private suspend fun uploadImages(transactionId: Int, addedImages: List<Uri>) {
         val supabaseUrl = "https://zqiagwapnqwnfhehhqom.supabase.co"
-        imageUris.forEach { uri ->
+        addedImages.forEach { uri ->
             val fileName = generateUniqueFileName()
             val file = File(uri.path!!)
             try {
                 val response = withContext(Dispatchers.IO) {
                     supabase.storage.from("imagenes").upload(fileName, file.readBytes())
                 }
-                val imageUrl = "$supabaseUrl/storage/v1/object/public/imagenes/$fileName" // URL completa de la imagen
+                val imageUrl = "$supabaseUrl/storage/v1/object/public/imagenes/$fileName"
 
                 val transImageData = Transimage(id_transaccion = transactionId, imagen = imageUrl)
-                println("#####################Transacción id: $transactionId")
-
-                // Insertar los datos en la tabla 'transimages'
-                val responseInsert = withContext(Dispatchers.IO) {
+                withContext(Dispatchers.IO) {
                     supabase.from("transimages").insert(transImageData)
                 }
             } catch (e: Exception) {
@@ -256,8 +301,7 @@ class EditTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, C
                     Toast.makeText(this@EditTransaction, "Error al subir la imagen", Toast.LENGTH_SHORT).show()
                 }
             }
-        }
-    }
+        }}
 
     private fun showCategoryDialog() {
         val dialog = CategoryDialogFragment()

@@ -17,7 +17,7 @@ suspend fun obtenerTransacciones(fecha: String, idUsuario: String): List<Transac
             val response = withContext(Dispatchers.IO) {
                 supabase.from("transacciones").select(columns = Columns.list(
                     "id_transaccion",
-                    "id_categoria(nombre_categoria)",
+                    "id_categoria(nombre_categoria)" ,
                     "nota",
                     "tipo",
                     "cantidad",
@@ -31,7 +31,7 @@ suspend fun obtenerTransacciones(fecha: String, idUsuario: String): List<Transac
                 }
             }
 
-            println("##########################################Obteniedo dartos HomeInformation")
+            println("##########################################Obteniedo dartos HomeInformation"+response.data)
 
             // Utilizar Moshi para parsear la respuesta JSON
             val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
@@ -70,7 +70,6 @@ suspend fun obtenerImagenesPorTransacciones(idsTransacciones: List<String>): Map
                 }
             }
         }
-        println("########################################################################response: " + response.data)
         // Utilizar Moshi para parsear la respuesta JSON
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val type = Types.newParameterizedType(List::class.java, Map::class.java)
