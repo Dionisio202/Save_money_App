@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -17,10 +18,16 @@ import com.edisoninnovations.save_money.DataManager.obtenerImagenesPorTransaccio
 import com.edisoninnovations.save_money.DataManager.obtenerTransacciones
 import com.edisoninnovations.save_money.adapter.TransactionsAdapter
 import com.edisoninnovations.save_money.models.Transaction
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.github.jan.supabase.gotrue.auth
+import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -158,5 +165,65 @@ class HomeInformation : AppCompatActivity() {
         private const val REQUEST_CODE_ADD_TRANSACTION = 1
         private const val REQUEST_CODE_EDIT_TRANSACTION = 2
 
+    }
+    public suspend fun deleteTransaction(transactionId: Int) {
+        try {
+            // Eliminar referencias de imágenes en la tabla transimages
+            val imagesResponse = withContext(Dispatchers.IO) {
+                supabase.from("transimages").select {
+                    filter {
+                        eq("id_transaccion", transactionId)
+
+                    }
+                }
+            }
+            println("########################imagesResponse: ${imagesResponse.data}")
+            // Utilizar Moshi para parsear la respuesta JSON
+            val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+            val type = Types.newParameterizedType(List::class.java, Map::class.java)
+            val jsonAdapter = moshi.adapter<List<Map<String, Any>>>(type)
+            val imagesData = jsonAdapter.fromJson(imagesResponse.data.toString()) ?: emptyList()
+
+            println("########################imagesData: $imagesData")
+            // Eliminar las imágenes del almacenamiento
+            imagesData.forEach { image ->
+                val imageUrl = image["imagen"] as? String ?: return@forEach
+                val fileName = imageUrl.substringAfterLast('/')
+
+                val deleteResponse = withContext(Dispatchers.IO) {
+                    supabase.storage.from("imagenes").delete(fileName)
+                }
+                println("########################deleteResponse: $deleteResponse")
+
+            }
+
+            // Eliminar las referencias de las imágenes de la tabla transimages
+            withContext(Dispatchers.IO) {
+                supabase.from("transimages").delete {
+                    filter {
+                        eq("id_transaccion", transactionId)
+
+                    }
+                }
+            }
+
+            // Eliminar la transacción de la tabla transacciones
+            withContext(Dispatchers.IO) {
+                supabase.from("transacciones").delete {
+                  filter {
+                      eq("id_transaccion", transactionId)
+                  }
+                }
+            }
+
+            withContext(Dispatchers.Main) {
+                Toast.makeText(this@HomeInformation, "Transacción eliminada correctamente", Toast.LENGTH_SHORT).show()
+                loadTransactions(DateManager.selectedDate ?: "Fecha no seleccionada", supabase.auth.currentUserOrNull()?.id ?: "")
+            }
+        } catch (e: Exception) {
+            withContext(Dispatchers.Main) {
+                Toast.makeText(this@HomeInformation, "Error al eliminar la transacción", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

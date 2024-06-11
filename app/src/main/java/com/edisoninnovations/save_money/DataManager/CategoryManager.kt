@@ -7,7 +7,7 @@ object CategoryManager {
         3 to "Diario",
         4 to "Regalo",
         5 to "Inversion",
-        20 to "Prestamo"
+        20 to "Prestamos"
     )
 
     private val expenseCategories = mapOf(

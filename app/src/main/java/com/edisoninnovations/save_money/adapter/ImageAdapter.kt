@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.edisoninnovations.save_money.R
@@ -37,9 +38,16 @@ class ImageAdapter(
         }
 
         holder.deleteButton.setOnClickListener {
-            imageUris.removeAt(position)
-            notifyItemRemoved(position)
-            notifyItemRangeChanged(position, imageUris.size)
+            AlertDialog.Builder(context)
+                .setTitle("Confirmar eliminación")
+                .setMessage("¿Estás seguro de que deseas eliminar esta imagen?")
+                .setPositiveButton("Sí") { dialog, which ->
+                    imageUris.removeAt(position)
+                    notifyItemRemoved(position)
+                    notifyItemRangeChanged(position, imageUris.size)
+                }
+                .setNegativeButton("No", null)
+                .show()
         }
     }
 

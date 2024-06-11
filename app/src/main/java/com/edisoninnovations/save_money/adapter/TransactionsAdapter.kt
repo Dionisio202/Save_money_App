@@ -9,6 +9,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.edisoninnovations.save_money.ImageDialogFragment
@@ -16,6 +17,11 @@ import com.edisoninnovations.save_money.R
 import com.edisoninnovations.save_money.models.Transaction
 import androidx.fragment.app.FragmentActivity
 import com.edisoninnovations.save_money.EditTransaction
+import com.edisoninnovations.save_money.HomeInformation
+import com.edisoninnovations.save_money.utils.LoadingDialog
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class TransactionsAdapter(
     private val context: Context,
@@ -80,6 +86,25 @@ class TransactionsAdapter(
             intent.putExtra("imageUrls", imageUrlsArray)
             activity.startActivityForResult(intent, REQUEST_CODE_EDIT_TRANSACTION)
         }
+        holder.delete_button.setOnClickListener {
+            val activity = context as FragmentActivity
+            val loadingDialog = LoadingDialog(context)
+            AlertDialog.Builder(context)
+                .setTitle("Confirmar eliminación")
+                .setMessage("¿Estás seguro de que deseas eliminar esta transacción?")
+                .setPositiveButton("Sí") { dialog, which ->
+                    CoroutineScope(Dispatchers.Main).launch {
+                        loadingDialog.startLoading()
+                        try {
+                            (activity as HomeInformation).deleteTransaction(transaction.id_transaccion.toInt())
+                        } finally {
+                            loadingDialog.isDismiss()
+                        }
+                    }
+                }
+                .setNegativeButton("No", null)
+                .show()
+        }
     }
 
     override fun getItemCount(): Int {
@@ -92,6 +117,7 @@ class TransactionsAdapter(
         val transactionNote: TextView = itemView.findViewById(R.id.transaction_note)
         val imageContainer: LinearLayout = itemView.findViewById(R.id.image_container)
         val editButton: ImageButton = itemView.findViewById(R.id.edit_button)
+        val delete_button: ImageButton = itemView.findViewById(R.id.delete_button)
     }
 
     companion object {
