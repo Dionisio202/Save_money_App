@@ -219,6 +219,7 @@ class HomeInformation : AppCompatActivity() {
             withContext(Dispatchers.Main) {
                 Toast.makeText(this@HomeInformation, "Transacción eliminada correctamente", Toast.LENGTH_SHORT).show()
                 loadTransactions(DateManager.selectedDate ?: "Fecha no seleccionada", supabase.auth.currentUserOrNull()?.id ?: "")
+                finishWithResult()
             }
         } catch (e: Exception) {
             withContext(Dispatchers.Main) {
