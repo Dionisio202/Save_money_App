@@ -15,7 +15,7 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
+        multiDexEnabled= true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -29,6 +29,8 @@ android {
         }
     }
     compileOptions {
+        // Enable support for the new language APIs
+
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -64,8 +66,7 @@ dependencies {
     implementation ("androidx.recyclerview:recyclerview:1.2.1")
     implementation ("com.github.bumptech.glide:glide:4.13.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.13.0")
-  //  implementation("com.prolificinteractive:material-calendarview:2.0.0")
-    implementation("com.github.sundeepk:compact-calendar-view:3.0.0") {
-        exclude(group = "com.android.support", module = "support-compat")
-    }
+    // The view calendar library
+
+    coreLibraryDesugaring ("com.android.tools:desugar_jdk_libs:1.1.5")
 }

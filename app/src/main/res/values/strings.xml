@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Save_Money</string>
+    <string name="forward"><![CDATA[-->]]></string>
+    <string name="back"><![CDATA[<--]]></string>
+    <string name="selected_date">Fecha seleccionada %1$s %2$s</string>
+    <string name="sunday">Dom</string>
+    <string name="monday">Lun</string>
+    <string name="tuesday">Mar</string>
+    <string name="wednesday">Mié</string>
+    <string name="thursday">Jue</string>
+    <string name="friday">Vie</string>
+    <string name="saturday">Sáb</string>
 </resources>

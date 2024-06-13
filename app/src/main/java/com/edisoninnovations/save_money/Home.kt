@@ -72,7 +72,7 @@ class Home : AppCompatActivity() {
             val selectedDate = "$year-${month + 1}-$dayOfMonth"
             DateManager.selectedDate = selectedDate
             println("Fecha seleccionada: $selectedDate")
-            val intent = Intent(this@Home, HomeInformation::class.java)
+            val intent = Intent(this@Home, CalendarCustom::class.java)
             startActivityForResult(intent, REQUEST_CODE_HOME_INFORMATION)
 
         }
@@ -134,7 +134,8 @@ class Home : AppCompatActivity() {
     @JsonClass(generateAdapter = true)
     data class Transaction(
         val cantidad: Float,
-        val tipo: String
+        val tipo: String,
+        val fecha: String
     )
 
     private fun getDataTransacctions(userId: String) {
@@ -142,12 +143,12 @@ class Home : AppCompatActivity() {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     print("################################Obteniendo dataHome################################")
-                    val response = supabase.from("transacciones").select(columns = Columns.list("cantidad", "tipo")) {
+                    val response = supabase.from("transacciones").select(columns = Columns.list("cantidad", "tipo","fecha")) {
                         filter {
                             eq("id_usuario", userId)
                         }
                     }
-
+                        println("################################Obteniendo dataHome#"+response.data)
                     val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
                     val type = Types.newParameterizedType(List::class.java, Transaction::class.java)
                     val jsonAdapter = moshi.adapter<List<Transaction>>(type)
@@ -172,6 +173,7 @@ class Home : AppCompatActivity() {
 
                 } catch (error: Exception) {
                     error.printStackTrace()
+                    println("#####################Error al obtener datos: ${error.message}")
                 }
             }
         }

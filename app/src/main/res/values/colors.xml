@@ -6,4 +6,16 @@
     <color name="gray_customed">#808080</color>
     <color name="green_customed">#008000</color>
     <color name="trasaction_text_customed">#247A27</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="calendar_event_color_income">#32CD32</color>
+    <color name="calendar_event_color_expense">#FF4500</color>
+    <color name="calendar_current_day_background">#FFFF00</color>
+    <color name="calendar_gray">#676666</color>
+    <color name="calendar_blue">#0000FF</color>
+    <color name="calendar_round_cell">#635B70</color>
+    <color name="event_indicator">#4C2D2D</color>
+    <color name="event_red">#FF0000</color>
+    <color name="event_green">#00FF00</color>
+    <color name="event_default">#000000</color>
 </resources>
