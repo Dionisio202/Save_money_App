@@ -69,4 +69,7 @@ dependencies {
     // The view calendar library
 
     coreLibraryDesugaring ("com.android.tools:desugar_jdk_libs:1.1.5")
+
+    implementation ("com.jakewharton.threetenabp:threetenabp:1.3.1")
+
 }

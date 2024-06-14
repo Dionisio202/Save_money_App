@@ -1,3 +1,4 @@
+import android.content.Intent
 import android.os.Build
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -9,7 +10,10 @@ import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.edisoninnovations.save_money.DataManager.DateManager
+import com.edisoninnovations.save_money.Home
 import com.edisoninnovations.save_money.R
+import com.edisoninnovations.save_money.HomeInformation
 import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -34,8 +38,10 @@ class CalendarAdapter(
     override fun onCreateViewHolder(@NonNull parent: ViewGroup, viewType: Int): CalendarViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(R.layout.calendar_cell, parent, false)
-        val layoutParams = view.layoutParams
-        layoutParams.height = (parent.height * 0.166666666).toInt()
+        val layoutParams = view.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.height = (parent.height / 6).toInt()
+        layoutParams.setMargins(0, 0, 0, 0)
+        view.layoutParams = layoutParams
         return CalendarViewHolder(view, onItemListener)
     }
 
@@ -83,12 +89,12 @@ class CalendarAdapter(
                 holder.eventIndicatorLeft.visibility = View.VISIBLE
                 holder.eventIndicatorRight.visibility = View.VISIBLE
                 holder.eventIndicatorLeft.layoutParams = (holder.eventIndicatorLeft.layoutParams as LinearLayout.LayoutParams).apply {
-                    width = indicatorWidth/2
+                    width = indicatorWidth / 2
                     height = 6
                     weight = 1f
                 }
                 holder.eventIndicatorRight.layoutParams = (holder.eventIndicatorRight.layoutParams as LinearLayout.LayoutParams).apply {
-                    width = indicatorWidth/2
+                    width = indicatorWidth / 2
                     height = 6
                     weight = 1f
                 }
@@ -100,15 +106,21 @@ class CalendarAdapter(
         }
 
         holder.itemView.setOnClickListener {
-            val previousPosition = selectedPosition
-            selectedPosition = holder.adapterPosition
+            if (day != null) { // Check if the day is valid
+                val previousPosition = selectedPosition
+                selectedPosition = holder.adapterPosition
 
-            if (previousPosition != RecyclerView.NO_POSITION) {
-                notifyItemChanged(previousPosition)
+                if (previousPosition != RecyclerView.NO_POSITION) {
+                    notifyItemChanged(previousPosition)
+                }
+                notifyItemChanged(selectedPosition)
+
+                // Intent to start HomeInformation activity
+                val context = holder.itemView.context
+                DateManager.selectedDate = LocalDate.of(selectedDate.year, selectedDate.month, day).toString()
+                val intent = Intent(context, HomeInformation::class.java)
+                (context as Home).startActivityForResult(intent, Home.REQUEST_CODE_HOME_INFORMATION)
             }
-            notifyItemChanged(selectedPosition)
-
-            onItemListener.onItemClick(holder.adapterPosition, daysOfMonth[holder.adapterPosition])
         }
     }
 
