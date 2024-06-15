@@ -25,4 +25,3 @@ class CalendarPagerAdapter(fragmentActivity: FragmentActivity, private val event
         }
     }
 }
-

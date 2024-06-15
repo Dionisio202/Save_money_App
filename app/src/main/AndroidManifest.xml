@@ -15,18 +15,29 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/wallet"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/wallet"
         android:supportsRtl="true"
         android:theme="@style/Theme.Save_Money"
         tools:targetApi="31">
         <activity
-            android:name=".PreSplash"
-            android:exported="false" />
+            android:name=".Home_main"
+            android:exported="false"
+            android:label="@string/title_activity_home_main"
+            android:theme="@style/Theme.HomeMain"
+            android:screenOrientation="portrait"
+            />
         <activity
-            android:name=".CalendarCustom"
-            android:exported="false" />
+            android:name=".PreSplash"
+            android:exported="true"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".EditTransaction"
             android:exported="false"
@@ -51,13 +62,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:windowSoftInputMode="adjustPan"></activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"

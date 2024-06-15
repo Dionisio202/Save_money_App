@@ -8,12 +8,15 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.edisoninnovations.save_money.DataManager.DateManager
 import com.edisoninnovations.save_money.Home
 import com.edisoninnovations.save_money.R
 import com.edisoninnovations.save_money.HomeInformation
+import com.edisoninnovations.save_money.ui.home.HomeFragment
 import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -119,7 +122,13 @@ class CalendarAdapter(
                 val context = holder.itemView.context
                 DateManager.selectedDate = LocalDate.of(selectedDate.year, selectedDate.month, day).toString()
                 val intent = Intent(context, HomeInformation::class.java)
-                (context as Home).startActivityForResult(intent, Home.REQUEST_CODE_HOME_INFORMATION)
+                if (context is FragmentActivity) {
+                    (context as FragmentActivity).startActivityForResult(intent, HomeFragment.REQUEST_CODE_HOME_INFORMATION)
+
+                } else {
+                    // Usa una alternativa para iniciar la actividad si no es FragmentActivity
+                    context.startActivity(intent)
+                }
             }
         }
     }

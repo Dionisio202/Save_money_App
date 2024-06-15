@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
             try {
                 val emailValue = emailLayout.editText?.text.toString()
                 val passwordValue = passwordLayout.editText?.text.toString()
-                supabase.auth.signInWith(Email) {
+                val session = supabase.auth.signInWith(Email) {
                     email = emailValue
                     password = passwordValue
                 }
@@ -103,13 +103,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun sesion(){
-        try {
-            val result = supabase.auth.currentUserOrNull()
-            println("Inicio de sesión exitoso: $result")
-        } catch (e: Exception) {
-            println("Error al iniciar sesión: ${e.message}")}
-    }
+
     private val textWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
