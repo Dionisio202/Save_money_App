@@ -18,4 +18,7 @@
     <color name="event_red">#CC0000</color>
     <color name="event_green">#669900</color>
     <color name="event_default">#000000</color>
+    <color name="loadBar">#6F6E20</color>
+    <color name="pre_Splash_screen">#E6E7D9</color>
+
 </resources>

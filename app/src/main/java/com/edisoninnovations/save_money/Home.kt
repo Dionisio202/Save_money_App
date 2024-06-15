@@ -286,7 +286,13 @@ class Home : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if ((requestCode == REQUEST_CODE_HOME_INFORMATION || requestCode == REQUEST_CODE_ADD_TRANSACTION) && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_CODE_HOME_INFORMATION && resultCode == RESULT_OK) {
+            val userId = supabase.auth.currentUserOrNull()?.id
+            if (userId != null) {
+                getDataTransacctions(userId)
+            }
+        }
+        if (requestCode == REQUEST_CODE_ADD_TRANSACTION && resultCode == RESULT_OK) {
             val userId = supabase.auth.currentUserOrNull()?.id
             if (userId != null) {
                 getDataTransacctions(userId)
