@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
                     password = passwordValue
                 }
                 Toast.makeText(this@MainActivity, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this@MainActivity, Home::class.java)
+                val intent = Intent(this@MainActivity, Home_main::class.java)
                 startActivity(intent)
             } catch (e: Exception) {
                 val errorMessage = when {

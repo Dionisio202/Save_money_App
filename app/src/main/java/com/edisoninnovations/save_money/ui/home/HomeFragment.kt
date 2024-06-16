@@ -191,9 +191,9 @@ class HomeFragment : Fragment() {
         val tvExpenseValue = view?.findViewById<TextView>(R.id.tv_expense_value)
         val tvBalance = view?.findViewById<TextView>(R.id.tv_balance)
 
-        tvIncomeValue?.text = "$$totalIncome"
-        tvExpenseValue?.text = "$$totalExpense"
-        tvBalance?.text = "$$truncatedTotal"
+        tvIncomeValue?.text = String.format("$%.2f", totalIncome)
+        tvExpenseValue?.text = String.format("$%.2f", totalExpense)
+        tvBalance?.text = String.format("$%.2f", truncatedTotal)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

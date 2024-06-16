@@ -7,10 +7,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import io.github.jan.supabase.gotrue.SessionStatus
 import io.github.jan.supabase.gotrue.auth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PreSplash : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,11 +32,20 @@ class PreSplash : AppCompatActivity() {
     }
 
     private suspend fun checkLoginStatus() {
-        val currentUser = supabase.auth.sessionStatus.value
-        val nextActivity = if (currentUser != null) {
-            Home_main::class.java
-        } else {
-            MainActivity::class.java
+        var currentUser: SessionStatus
+        do {
+            currentUser = supabase.auth.sessionStatus.value
+            println("TTTTTTTTTTTTTTTTTTTTTCurrent User: $currentUser")
+            if (currentUser == SessionStatus.LoadingFromStorage) {
+                withContext(Dispatchers.IO) {
+                    Thread.sleep(100)
+                }
+            }
+        } while (currentUser == SessionStatus.LoadingFromStorage)
+
+        val nextActivity = when (currentUser) {
+            is SessionStatus.Authenticated -> Home_main::class.java
+            else -> MainActivity::class.java
         }
 
         Handler().postDelayed({

@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.edisoninnovations.save_money.models.Transaction
+import com.edisoninnovations.save_money.models.TransactionRepository
 import com.edisoninnovations.save_money.supabase
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.from
@@ -19,6 +20,8 @@ import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import org.json.JSONArray
+import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
@@ -42,7 +45,9 @@ class HomeViewModel : ViewModel() {
     data class Transaction(
         val cantidad: Float,
         val tipo: String,
-        val fecha: String
+        val fecha: String,
+        val id_account: String?,
+        val title: String?
     )
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -55,17 +60,21 @@ class HomeViewModel : ViewModel() {
         if (userId.trim().isNotEmpty()) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    val response = supabase.from("transacciones").select(columns = Columns.list("cantidad", "tipo", "fecha")) {
+                    val response = supabase.from("transacciones").select(columns = Columns.list(
+                        "cantidad", "tipo", "fecha","id_account","id_account(title)")) {
                         filter {
                             eq("id_usuario", userId)
                         }
                     }
                     println("$$$$$$$$$$$$$$--"+response.data)
+
+                    val cleanedData = cleanJsonData(response.data.toString())
                     val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
                     val type = Types.newParameterizedType(List::class.java, Transaction::class.java)
                     val jsonAdapter = moshi.adapter<List<Transaction>>(type)
-                    val transacciones = jsonAdapter.fromJson(response.data.toString())
-
+                    val transacciones = jsonAdapter.fromJson(cleanedData)
+                    println("YYYYYYYYY"+transacciones)
+                    println("YYYYYYYYY DataLimpia"+cleanedData)
                     if (transacciones == null) {
                         // Handle the case where transacciones is null
                         return@launch
@@ -109,19 +118,80 @@ class HomeViewModel : ViewModel() {
                     _totalIncome.postValue(roundedTotalIncome)
                     _totalExpense.postValue(roundedTotalExpense)
                     _transactions.postValue(transacciones)
-
+                    TransactionRepository.setTransactions(transacciones)
                     // Set the refresh flag to false
                     needsRefresh = false
 
                 } catch (error: Exception) {
                     error.printStackTrace()
+                    println("$$$$$$$$$$$$$$--"+error.message)
                 }
             }
         }
     }
+    @JsonClass(generateAdapter = true)
+    data class Account(
+        val title: String?,
+        val id: String?
+    )
+    private fun cleanJsonData(jsonData: String): String {
+        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+        val transactionType = Types.newParameterizedType(List::class.java, Transaction::class.java)
+        val transactionAdapter = moshi.adapter<List<Transaction>>(transactionType)
+
+        val jsonArray = JSONArray(jsonData)
+        val transactionList = mutableListOf<JSONObject>()
+
+        for (i in 0 until jsonArray.length()) {
+            val jsonObject = jsonArray.getJSONObject(i)
+            println("Original JSON: $jsonObject") // Log original JSON
+
+            val idAccount = jsonObject.opt("id_account")
+            println("############idAccount: $idAccount") // Log idAccount value
+
+            if (idAccount is JSONObject) {
+                val accountAdapter = moshi.adapter(Account::class.java)
+                val account = accountAdapter.fromJson(idAccount.toString())
+                jsonObject.put("account_title", account?.title ?: JSONObject.NULL)
+                jsonObject.put("id_account", account?.id ?: JSONObject.NULL)
+                println("Updated JSON (Object): $jsonObject") // Log updated JSON
+            } else if (idAccount is String || idAccount is Number) {
+                jsonObject.put("id_account", idAccount.toString())
+                jsonObject.put("account_title", JSONObject.NULL)
+                println("Updated JSON (String/Number): $jsonObject") // Log updated JSON
+            } else {
+                jsonObject.put("id_account", JSONObject.NULL)
+                jsonObject.put("account_title", JSONObject.NULL)
+                println("Updated JSON (Null): $jsonObject") // Log updated JSON
+            }
+
+            transactionList.add(jsonObject)
+        }
+
+        val updatedTransactions = transactionList.map { jsonObj ->
+            val transaction = moshi.adapter(Transaction::class.java).fromJson(jsonObj.toString())
+            println("Mapped Transaction: $transaction") // Log each mapped transaction
+            transaction
+        }.filterNotNull() // Remove any null values
+
+        val resultJson = transactionAdapter.toJson(updatedTransactions)
+        println("Resulting JSON: $resultJson") // Log the resulting JSON
+
+        return resultJson
+    }
+
+
+
+
+
+
+
+
+
 
     // Method to set the refresh flag when a new transaction is added
     fun setNeedsRefresh() {
         needsRefresh = true
     }
+
 }
