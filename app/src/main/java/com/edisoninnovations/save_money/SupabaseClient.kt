@@ -1,6 +1,7 @@
 package com.edisoninnovations.save_money
 
 import io.github.jan.supabase.createSupabaseClient
+import io.github.jan.supabase.functions.Functions
 import io.github.jan.supabase.gotrue.Auth
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.storage.Storage
@@ -12,4 +13,5 @@ val supabase = createSupabaseClient(
     install(Postgrest)
     install(Auth)
     install(Storage)
+   // install(Functions)
 }

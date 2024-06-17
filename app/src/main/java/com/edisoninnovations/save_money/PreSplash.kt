@@ -35,7 +35,6 @@ class PreSplash : AppCompatActivity() {
         var currentUser: SessionStatus
         do {
             currentUser = supabase.auth.sessionStatus.value
-            println("TTTTTTTTTTTTTTTTTTTTTCurrent User: $currentUser")
             if (currentUser == SessionStatus.LoadingFromStorage) {
                 withContext(Dispatchers.IO) {
                     Thread.sleep(100)

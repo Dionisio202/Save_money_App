@@ -39,6 +39,8 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        dataBinding = true
+
     }
 }
 
@@ -79,5 +81,9 @@ dependencies {
     coreLibraryDesugaring ("com.android.tools:desugar_jdk_libs:1.1.5")
 
     implementation ("com.jakewharton.threetenabp:threetenabp:1.3.1")
+    //functions supabase
+    implementation("io.github.jan-tennert.supabase:functions-kt:2.3.1")
+
+
 
 }

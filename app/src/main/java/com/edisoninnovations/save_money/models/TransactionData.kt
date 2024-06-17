@@ -14,3 +14,9 @@ data class Transimage(
     val id_transaccion: Int,
     val imagen: String
 )
+
+@kotlinx.serialization.Serializable
+data class AccountData(
+    val id_usuario :String,
+    val title:String
+)

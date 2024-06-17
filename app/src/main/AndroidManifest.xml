@@ -22,12 +22,14 @@
         android:theme="@style/Theme.Save_Money"
         tools:targetApi="31">
         <activity
+            android:name=".AddAccount"
+            android:exported="false" />
+        <activity
             android:name=".Home_main"
             android:exported="false"
             android:label="@string/title_activity_home_main"
-            android:theme="@style/Theme.HomeMain"
             android:screenOrientation="portrait"
-            />
+            android:theme="@style/Theme.HomeMain" />
         <activity
             android:name=".PreSplash"
             android:exported="true"
@@ -62,7 +64,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustPan"></activity>
+            android:windowSoftInputMode="adjustPan" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
