@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.edisoninnovations.save_money.DataManager.CategoryManager
 import com.edisoninnovations.save_money.DataManager.DateManager
 import com.edisoninnovations.save_money.models.TransactionData
+import com.edisoninnovations.save_money.models.TransactionDataEdit
 import com.edisoninnovations.save_money.models.Transimage
 import com.edisoninnovations.save_money.utils.LoadingDialog
 import com.edisoninnovations.save_money.utils.createImageFile
@@ -185,7 +186,7 @@ class EditTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, C
                         val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
                         val formattedTime = timeFormat.format(Date(currentTimeMillis))
 
-                        val transactionData = TransactionData(
+                        val transactionData = TransactionDataEdit(
                             id_categoria = selectedCategoryId,
                             nota = note,
                             tipo = tipo,

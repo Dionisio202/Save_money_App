@@ -7,6 +7,18 @@ data class TransactionData(
     val cantidad: Double,
     val id_usuario: String,
     val fecha: String,
+    val tiempo: String,
+    val id_account: Int?
+
+)
+@kotlinx.serialization.Serializable
+data class TransactionDataEdit(
+    val id_categoria: Int,
+    val nota: String?,
+    val tipo: String,
+    val cantidad: Double,
+    val id_usuario: String,
+    val fecha: String,
     val tiempo: String
 )
 @kotlinx.serialization.Serializable

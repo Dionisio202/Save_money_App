@@ -95,6 +95,27 @@
         </FrameLayout>
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/account_spinner_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingTop="12dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="12dp">
+
+        <Spinner
+            android:id="@+id/account_spinner"
+            android:layout_width="325dp"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown"
+            android:background="@drawable/amount_border"
+            android:layout_marginBottom="12dp"
+            android:layout_marginTop="4dp"
+            android:padding="8dp"/>
+    </LinearLayout>
     <!-- Add Note Text Area -->
     <LinearLayout
         android:layout_width="match_parent"

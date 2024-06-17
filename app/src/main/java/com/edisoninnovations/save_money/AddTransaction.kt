@@ -8,8 +8,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.InputFilter
+import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.LinearLayout
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -25,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.edisoninnovations.save_money.DataManager.DateManager
 import com.edisoninnovations.save_money.models.TransactionData
 import com.edisoninnovations.save_money.models.Transimage
+import com.edisoninnovations.save_money.ui.gallery.GalleryFragment
 import com.edisoninnovations.save_money.utils.LoadingDialog
 import com.edisoninnovations.save_money.utils.createImageFile
 import com.edisoninnovations.save_money.utils.getCurrentPhotoPath
@@ -33,6 +38,7 @@ import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -55,6 +61,11 @@ class AddTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, Ca
     private lateinit var categoryButton: ImageButton
     private lateinit var loadingDialog: LoadingDialog
     private var selectedCategoryId: Int = -1 // Default category ID
+    private lateinit var accountSpinner: Spinner
+    private var accounts: List<GalleryFragment.Account> = emptyList() // Initialize as empty list
+
+    private lateinit var accountSpinnerContainer: LinearLayout
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +85,8 @@ class AddTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, Ca
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         imageAdapter = ImageAdapter(imageUris, this, this)
         recyclerView.adapter = imageAdapter
+        accountSpinner = findViewById(R.id.account_spinner)
+        accountSpinnerContainer = findViewById(R.id.account_spinner_container)
 
         val amountInput: EditText = findViewById(R.id.amount_input)
         amountInput.filters = arrayOf(InputFilter.LengthFilter(12))
@@ -102,6 +115,9 @@ class AddTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, Ca
                 }
             }
         }
+        lifecycleScope.launch {
+            fetchAccounts()
+        }
 
         categoryButton = findViewById(R.id.category_button)
         categoryButton.setOnClickListener {
@@ -123,6 +139,40 @@ class AddTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, Ca
             }
         }
     }
+    private suspend fun fetchAccounts() {
+        val userId = supabase.auth.currentUserOrNull()?.id
+
+        val response = withContext(Dispatchers.IO) {
+            supabase.from("accounts").select(columns = Columns.list("title", "id_account")) {
+                filter {
+                    if (userId != null) {
+                        eq("id_usuario", userId)
+                    }
+                }
+            }
+        }
+
+        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+        val accountListType = Types.newParameterizedType(List::class.java, GalleryFragment.Account::class.java)
+        val accountAdapter = moshi.adapter<List<GalleryFragment.Account>>(accountListType)
+        val accounts: List<GalleryFragment.Account>? = accountAdapter.fromJson(response.data.toString())
+
+        if (accounts != null && accounts.isNotEmpty()) {
+            val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, accounts.map { it.title })
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            accountSpinner.adapter = adapter
+
+            // Save the accounts in a variable for later use
+            this.accounts = accounts
+            // Show the spinner
+            accountSpinnerContainer.visibility = View.VISIBLE
+        } else {
+            // Hide the spinner if there are no accounts
+            accountSpinnerContainer.visibility = View.GONE
+        }
+    }
+
+
 
     private suspend fun saveTransaction(selectedDate: String, userId: String?, tipo: String) {
         loadingDialog.startLoading()
@@ -133,6 +183,7 @@ class AddTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, Ca
             val category = categoryText.text.toString()
             val descriptionInput: EditText = findViewById(R.id.note_input)
             val note = descriptionInput.text.toString()
+        
 
             if (amount != null && userId != null && category.isNotEmpty() ) {
                 if(amount>0){
@@ -148,7 +199,9 @@ class AddTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, Ca
                             cantidad = amount,
                             id_usuario = userId,
                             fecha = selectedDate,
-                            tiempo = formattedTime
+                            tiempo = formattedTime,
+                            id_account = if (accounts.isNotEmpty()) accounts[accountSpinner.selectedItemPosition].id_account.toInt() else null
+
                         )
 
                         val response = withContext(Dispatchers.IO) {

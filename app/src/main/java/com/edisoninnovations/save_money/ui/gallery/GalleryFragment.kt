@@ -26,6 +26,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+
+
 class GalleryFragment : Fragment() {
 
     private var _binding: FragmentGalleryBinding? = null
@@ -47,15 +49,27 @@ class GalleryFragment : Fragment() {
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        // Observa las transacciones del TransactionRepository
         TransactionRepository.transactions.observe(viewLifecycleOwner) { transactions ->
             println("GalleryFragment: Transactions received: $transactions")
 
-            // Filtra las transacciones que tienen títulos diferentes de null
-            val filteredTransactions = transactions.filter { it.title != null }
+            // Group transactions by account, filter out null account IDs
+            val groupedTransactions = transactions.filter { it.id_account != null }.groupBy { it.id_account }
+            val accountSummaries = groupedTransactions.map { (accountId, accountTransactions) ->
+                val totalIncome = accountTransactions.filter { it.tipo == "income" }.sumByDouble { it.cantidad.toDouble() }
+                val totalExpense = accountTransactions.filter { it.tipo == "expense" }.sumByDouble { it.cantidad.toDouble() }
+                val finalBalance = totalIncome - totalExpense
 
-            // Configura el RecyclerView Adapter
-            binding.recyclerView.adapter = AccountAdapter(filteredTransactions)
+                AccountSummary(
+                    id_account = accountId!!,
+                    title = accountTransactions.firstOrNull()?.title ?: "Unknown",
+                    totalIncome = totalIncome,
+                    totalExpense = totalExpense,
+                    finalBalance = finalBalance
+                )
+            }
+
+            // Update RecyclerView Adapter with the account summaries
+            binding.recyclerView.adapter = AccountAdapter(accountSummaries)
         }
 
         binding.fab.setOnClickListener {
@@ -63,7 +77,7 @@ class GalleryFragment : Fragment() {
             startActivity(intent)
         }
 
-        // Observa si necesita refrescar los datos
+        // Observe if needs to refresh the data
         TransactionRepository.needsRefresh.observe(viewLifecycleOwner) { needsRefresh ->
             if (needsRefresh) {
                 viewLifecycleOwner.lifecycleScope.launch {
@@ -125,4 +139,12 @@ class GalleryFragment : Fragment() {
             TransactionRepository.setTransactions(TransactionRepository.transactions.value.orEmpty() + newTransactions)
         }
     }
+
+    data class AccountSummary(
+        val id_account: String,
+        val title: String,
+        val totalIncome: Double,
+        val totalExpense: Double,
+        val finalBalance: Double
+    )
 }

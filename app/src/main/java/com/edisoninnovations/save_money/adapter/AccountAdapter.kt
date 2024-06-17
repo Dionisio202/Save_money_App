@@ -3,9 +3,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.edisoninnovations.save_money.databinding.ItemAccountBinding
+import com.edisoninnovations.save_money.ui.gallery.GalleryFragment
 import com.edisoninnovations.save_money.ui.home.HomeViewModel
 
-class AccountAdapter(private val transactions: List<HomeViewModel.Transaction>) : RecyclerView.Adapter<AccountAdapter.AccountViewHolder>() {
+class AccountAdapter(private val accountSummaries: List<GalleryFragment.AccountSummary>) : RecyclerView.Adapter<AccountAdapter.AccountViewHolder>() {
 
     class AccountViewHolder(val binding: ItemAccountBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -15,13 +16,12 @@ class AccountAdapter(private val transactions: List<HomeViewModel.Transaction>) 
     }
 
     override fun onBindViewHolder(holder: AccountViewHolder, position: Int) {
-        val transaction = transactions[position]
-        holder.binding.txtTitle.text = transaction.title
-        holder.binding.txtIngreso.text = "Total Income: ${transaction.cantidad}"  // Ajusta según tu lógica
-        holder.binding.txtGasto.text = "Total Expense: ${transaction.cantidad}"  // Ajusta según tu lógica
-        holder.binding.txtMontoTotal.text = "Final Balance: ${transaction.cantidad}"  // Ajusta según tu lógica
-        // Aquí puedes cargar la imagen en el ImageView si es necesario
+        val accountSummary = accountSummaries[position]
+        holder.binding.txtTitle.text = accountSummary.title
+        holder.binding.txtIngreso.text = "Total Income: ${accountSummary.totalIncome}"
+        holder.binding.txtGasto.text = "Total Expense: ${accountSummary.totalExpense}"
+        holder.binding.txtMontoTotal.text = "Final Balance: ${accountSummary.finalBalance}"
     }
 
-    override fun getItemCount(): Int = transactions.size
+    override fun getItemCount(): Int = accountSummaries.size
 }
