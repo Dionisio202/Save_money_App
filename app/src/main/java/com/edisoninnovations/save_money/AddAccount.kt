@@ -51,7 +51,7 @@ class AddAccount : AppCompatActivity() {
                     }
                 }
             } else {
-                Toast.makeText(this@AddAccount, "El nombre debe tener más de 3 caracteres y no puede ser solo números", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AddAccount, "Ingrese una cuenta válida", Toast.LENGTH_SHORT).show()
             }
         }
 

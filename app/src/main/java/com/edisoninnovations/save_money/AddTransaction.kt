@@ -62,7 +62,7 @@ class AddTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, Ca
     private lateinit var loadingDialog: LoadingDialog
     private var selectedCategoryId: Int = -1 // Default category ID
     private lateinit var accountSpinner: Spinner
-    private var accounts: List<GalleryFragment.Account> = emptyList() // Initialize as empty list
+    private var accounts: List<GalleryFragment.Account> = emptyList()
 
     private lateinit var accountSpinnerContainer: LinearLayout
 
@@ -157,17 +157,21 @@ class AddTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, Ca
         val accountAdapter = moshi.adapter<List<GalleryFragment.Account>>(accountListType)
         val accounts: List<GalleryFragment.Account>? = accountAdapter.fromJson(response.data.toString())
 
-        if (accounts != null && accounts.isNotEmpty()) {
-            val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, accounts.map { it.title })
+        if (accounts != null) {
+            // Agregar la opción "No seleccionar ninguna cuenta"
+            val accountTitles = listOf("No seleccionar ninguna cuenta") + accounts.map { it.title }
+
+            val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, accountTitles)
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             accountSpinner.adapter = adapter
 
-            // Save the accounts in a variable for later use
+            // Guarda las cuentas en una variable para usarlas más tarde
             this.accounts = accounts
-            // Show the spinner
+
+            // Mostrar el contenedor del spinner
             accountSpinnerContainer.visibility = View.VISIBLE
         } else {
-            // Hide the spinner if there are no accounts
+            // Ocultar el contenedor del spinner si no hay cuentas
             accountSpinnerContainer.visibility = View.GONE
         }
     }
@@ -183,14 +187,20 @@ class AddTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, Ca
             val category = categoryText.text.toString()
             val descriptionInput: EditText = findViewById(R.id.note_input)
             val note = descriptionInput.text.toString()
-        
 
-            if (amount != null && userId != null && category.isNotEmpty() ) {
-                if(amount>0){
-                    if(selectedCategoryId != -1){
+            if (amount != null && userId != null && category.isNotEmpty()) {
+                if (amount > 0) {
+                    if (selectedCategoryId != -1) {
                         val currentTimeMillis = System.currentTimeMillis()
                         val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
                         val formattedTime = timeFormat.format(Date(currentTimeMillis))
+
+                        val selectedAccountIndex = accountSpinner.selectedItemPosition
+                        val selectedAccountId = if (selectedAccountIndex > 0) {
+                            accounts[selectedAccountIndex - 1].id_account.toInt()
+                        } else {
+                            null
+                        }
 
                         val transactionData = TransactionData(
                             id_categoria = selectedCategoryId,
@@ -200,8 +210,7 @@ class AddTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, Ca
                             id_usuario = userId,
                             fecha = selectedDate,
                             tiempo = formattedTime,
-                            id_account = if (accounts.isNotEmpty()) accounts[accountSpinner.selectedItemPosition].id_account.toInt() else null
-
+                            id_account = selectedAccountId
                         )
 
                         val response = withContext(Dispatchers.IO) {
@@ -223,15 +232,12 @@ class AddTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, Ca
                         Toast.makeText(this@AddTransaction, "Transacción guardada", Toast.LENGTH_SHORT).show()
                         setResult(RESULT_OK)
                         finish()
-                    }else{
+                    } else {
                         Toast.makeText(this@AddTransaction, "Por favor, seleccione una categoría", Toast.LENGTH_SHORT).show()
                     }
-
-                }else{
+                } else {
                     Toast.makeText(this@AddTransaction, "La cantidad debe ser mayor a 0", Toast.LENGTH_SHORT).show()
                 }
-
-
             } else {
                 Toast.makeText(this@AddTransaction, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show()
             }
@@ -241,6 +247,7 @@ class AddTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, Ca
             loadingDialog.isDismiss()
         }
     }
+
     private fun generateUniqueFileName(): String {
         val timestamp = System.currentTimeMillis()
         return "image_$timestamp.png"

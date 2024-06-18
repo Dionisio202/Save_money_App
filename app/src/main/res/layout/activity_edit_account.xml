@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/main"
+    android:background="#F9F9F9"
+    tools:context=".EditAccount"
+    >
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="#314262"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Editar Cuenta"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+        <ImageButton
+            android:id="@+id/delete_button"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:scaleType="centerInside"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/delete2"
+            android:layout_marginEnd="2dp"
+            />
+
+    </LinearLayout>
+
+    <!-- Account Input -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="16dp"
+        android:layout_marginTop="12dp">
+
+        <EditText
+            android:id="@+id/name_input"
+            android:layout_width="240dp"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:hint="Ingresar un nombre"
+
+            android:textColorHint="@android:color/black"
+            android:inputType="text"
+            android:textSize="20sp"
+            android:textColor="@android:color/black"
+            android:background="@drawable/amount_border"
+            android:maxLength="13"/>
+    </LinearLayout>
+
+    <!-- Choose Category Button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingTop="12dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="12dp"/>
+
+    <!-- Add Note Text Area -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="0dp"/>
+
+
+
+
+    <!-- Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingTop="16dp">
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageButton
+                android:id="@+id/cancel_button"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/rectangular_buttonimage"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="fitXY"
+                android:contentDescription="Cerrar"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Cerrar"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageButton
+                android:id="@+id/save_button"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/rectangular_buttonimage"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="fitXY"
+                android:contentDescription="Editar"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Guardar"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"/>
+        </FrameLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

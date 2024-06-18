@@ -8,8 +8,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.InputFilter
+import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.LinearLayout
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -27,6 +31,7 @@ import com.edisoninnovations.save_money.DataManager.DateManager
 import com.edisoninnovations.save_money.models.TransactionData
 import com.edisoninnovations.save_money.models.TransactionDataEdit
 import com.edisoninnovations.save_money.models.Transimage
+import com.edisoninnovations.save_money.ui.gallery.GalleryFragment
 import com.edisoninnovations.save_money.utils.LoadingDialog
 import com.edisoninnovations.save_money.utils.createImageFile
 import com.edisoninnovations.save_money.utils.getCurrentPhotoPath
@@ -35,6 +40,7 @@ import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -59,7 +65,12 @@ class EditTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, C
     private var selectedCategoryId: Int = -1 // Default category ID
     private lateinit var transactionId: String;
     private lateinit var originalImageUris: List<Uri>
+    private var selectedAccountId: String? = null
+    private var selectedtitleAccount: String? = null
+    private lateinit var accountSpinner: Spinner
+    private var accounts: List<GalleryFragment.Account> = emptyList()
 
+    private lateinit var accountSpinnerContainer: LinearLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -77,8 +88,8 @@ class EditTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, C
         val amount = intent.getDoubleExtra("amount", 0.0)
         val note = intent.getStringExtra("note")
         val tipos= intent.getStringExtra("tipo")
-
-
+        selectedAccountId = intent.getStringExtra("id_account")
+        selectedtitleAccount = intent.getStringExtra("title")
         if(tipos=="expense"){
             isIncome = false
         }else{
@@ -88,7 +99,8 @@ class EditTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, C
         val categoryId = category?.let { CategoryManager.getCategoryID(it, isIncome) }
         selectedCategoryId = categoryId ?: -1
         val imageUrls = intent.getStringArrayExtra("imageUrls")?.toList() ?: emptyList()
-
+        accountSpinner = findViewById(R.id.account_spinner)
+        accountSpinnerContainer = findViewById(R.id.account_spinner_container)
         // Configurar los campos con los datos recibidos
         findViewById<EditText>(R.id.amount_input).setText(amount.toString())
         findViewById<TextView>(R.id.category_text).text = category
@@ -166,7 +178,64 @@ class EditTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, C
                 }
             }
         }
+        lifecycleScope.launch {
+            println("############################Account id: $selectedAccountId")
+            println("############################Account title: $selectedtitleAccount")
+            fetchAccounts()
+        }
     }
+    private suspend fun fetchAccounts() {
+        val userId = supabase.auth.currentUserOrNull()?.id
+
+        val response = withContext(Dispatchers.IO) {
+            supabase.from("accounts").select(columns = Columns.list("title", "id_account")) {
+                filter {
+                    if (userId != null) {
+                        eq("id_usuario", userId)
+                    }
+                }
+            }
+        }
+
+        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+        val accountListType = Types.newParameterizedType(List::class.java, GalleryFragment.Account::class.java)
+        val accountAdapter = moshi.adapter<List<GalleryFragment.Account>>(accountListType)
+        val accounts: List<GalleryFragment.Account>? = accountAdapter.fromJson(response.data.toString())
+
+        if (accounts != null) {
+            // Agregar la opción "No seleccionar ninguna cuenta" al principio de la lista
+            val accountTitles = listOf("No seleccionar ninguna cuenta") + accounts.map { it.title }
+            val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, accountTitles)
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            accountSpinner.adapter = adapter
+
+            // Save the accounts in a variable for later use
+            this.accounts = accounts
+            println("#######################################accounts $accounts")
+            println("#######################################selectedAccountId $selectedAccountId")
+            println("#######################################selectedtitleAccount $selectedtitleAccount")
+
+            // Asignar un valor por defecto a selectedAccountId si es null
+            val defaultAccountId = selectedAccountId?.toDoubleOrNull()?.toInt()?.toString() ?: "0"
+
+            // Select the correct account in the Spinner
+            val position = if (defaultAccountId != "0") {
+                accounts.indexOfFirst { it.id_account == defaultAccountId } + 1
+            } else {
+                0 // "No seleccionar ninguna cuenta"
+            }
+            accountSpinner.setSelection(position)
+
+            // Show the spinner
+            accountSpinnerContainer.visibility = View.VISIBLE
+        } else {
+            // Hide the spinner if there are no accounts
+            accountSpinnerContainer.visibility = View.GONE
+        }
+    }
+
+
+
 
 
     private suspend fun editTransaction(selectedDate: String, userId: String?, tipo: String) {
@@ -185,15 +254,21 @@ class EditTransaction : AppCompatActivity(), ImageAdapter.OnItemClickListener, C
                         val currentTimeMillis = System.currentTimeMillis()
                         val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
                         val formattedTime = timeFormat.format(Date(currentTimeMillis))
+                    val accountId = if (accountSpinner.selectedItemPosition > 0) {
+                        accounts[accountSpinner.selectedItemPosition - 1].id_account.toInt()
+                    } else {
+                        null
+                    }
 
-                        val transactionData = TransactionDataEdit(
+                        val transactionData = TransactionData(
                             id_categoria = selectedCategoryId,
                             nota = note,
                             tipo = tipo,
                             cantidad = amount,
                             id_usuario = userId,
                             fecha = selectedDate,
-                            tiempo = formattedTime
+                            tiempo = formattedTime,
+                            id_account =accountId
                         )
 
                         val response = withContext(Dispatchers.IO) {

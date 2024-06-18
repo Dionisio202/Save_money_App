@@ -64,7 +64,7 @@ class HomeViewModel : ViewModel() {
                 try {
                     val response2 = supabase.postgrest.rpc("get_transactions_by_user", mapOf("user_id" to userId))
 
-                    println("$$$$$$$$$$$$$$--"+response2.data)
+                    println("#############Obteniendo data HOME--"+response2.data)
 
 
 
@@ -72,7 +72,7 @@ class HomeViewModel : ViewModel() {
                     val type = Types.newParameterizedType(List::class.java, Transaction::class.java)
                     val jsonAdapter = moshi.adapter<List<Transaction>>(type)
                     val transacciones = jsonAdapter.fromJson(response2.data)
-                    println("YYYYYYYYY"+transacciones)
+
 
                     if (transacciones == null) {
                         // Handle the case where transacciones is null

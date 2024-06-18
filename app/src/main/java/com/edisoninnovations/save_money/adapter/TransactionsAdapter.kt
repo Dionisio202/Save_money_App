@@ -80,6 +80,8 @@ class TransactionsAdapter(
             intent.putExtra("amount", transaction.amount)
             intent.putExtra("note", transaction.note)
             intent.putExtra("tipo", transaction.tipo)
+            intent.putExtra("id_account", transaction.id_account)
+            intent.putExtra("title", transaction.title)
 
             // Añadir las URLs de las imágenes
             val imageUrlsArray = transaction.imageUrls?.toTypedArray()

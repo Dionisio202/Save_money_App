@@ -7,5 +7,8 @@ data class Transaction(
     val note: String,
     val tipo: String,
     val imageUrls: List<String>?,
+    val id_account: String?,
+    val title: String?
+
    // val CategoriaId:Int
 )

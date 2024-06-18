@@ -5,11 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.edisoninnovations.save_money.AddAccount
+import com.edisoninnovations.save_money.EditAccount
 import com.edisoninnovations.save_money.adapter.AccountAdapter
 import com.edisoninnovations.save_money.databinding.FragmentGalleryBinding
 import com.edisoninnovations.save_money.models.TransactionRepository
@@ -25,8 +27,6 @@ import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
-
 
 class GalleryFragment : Fragment() {
 
@@ -45,14 +45,10 @@ class GalleryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        println("GalleryFragment: Transactions received: " + TransactionRepository.transactions.value)
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         TransactionRepository.transactions.observe(viewLifecycleOwner) { transactions ->
-            println("GalleryFragment: Transactions received: $transactions")
-
-            // Group transactions by account, filter out null account IDs
             val groupedTransactions = transactions.filter { it.id_account != null }.groupBy { it.id_account }
             val accountSummaries = groupedTransactions.map { (accountId, accountTransactions) ->
                 val totalIncome = accountTransactions.filter { it.tipo == "income" }.sumByDouble { it.cantidad.toDouble() }
@@ -68,8 +64,13 @@ class GalleryFragment : Fragment() {
                 )
             }
 
-            // Update RecyclerView Adapter with the account summaries
-            binding.recyclerView.adapter = AccountAdapter(accountSummaries)
+            binding.recyclerView.adapter = AccountAdapter(accountSummaries) { accountSummary ->
+                val intent = Intent(requireContext(), EditAccount::class.java).apply {
+                    putExtra("id_account", accountSummary.id_account)
+                    putExtra("title", accountSummary.title)
+                }
+                startActivityForResult(intent, EDIT_ACCOUNT_REQUEST_CODE)
+            }
         }
 
         binding.fab.setOnClickListener {
@@ -77,7 +78,6 @@ class GalleryFragment : Fragment() {
             startActivity(intent)
         }
 
-        // Observe if needs to refresh the data
         TransactionRepository.needsRefresh.observe(viewLifecycleOwner) { needsRefresh ->
             if (needsRefresh) {
                 viewLifecycleOwner.lifecycleScope.launch {
@@ -112,8 +112,6 @@ class GalleryFragment : Fragment() {
             }
         }
 
-        println("Obteniendo cuentas: ${response.data}")
-
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val accountListType = Types.newParameterizedType(List::class.java, Account::class.java)
         val accountAdapter = moshi.adapter<List<Account>>(accountListType)
@@ -147,4 +145,44 @@ class GalleryFragment : Fragment() {
         val totalExpense: Double,
         val finalBalance: Double
     )
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == EDIT_ACCOUNT_REQUEST_CODE && resultCode == AppCompatActivity.RESULT_OK) {
+            val updatedAccountId = data?.getStringExtra("updated_account_id")
+            val updatedAccountTitle = data?.getStringExtra("updated_account_title")
+            if (updatedAccountId != null && updatedAccountTitle != null) {
+                updateAccountTitle(updatedAccountId, updatedAccountTitle)
+            }
+            val deletedAccountId = data?.getStringExtra("deleted_account_id")
+            if (deletedAccountId != null) {
+                removeAccount(deletedAccountId)
+            }
+        }
+    }
+
+    private fun updateAccountTitle(accountId: String, newTitle: String) {
+        val transactions = TransactionRepository.transactions.value?.map {
+            if (it.id_account == accountId) {
+                it.copy(title = newTitle)
+            } else {
+                it
+            }
+        } ?: return
+
+        TransactionRepository.setTransactions(transactions)
+    }
+
+    private fun removeAccount(accountId: String) {
+        val transactions = TransactionRepository.transactions.value?.filterNot {
+            it.id_account == accountId
+        } ?: return
+
+        TransactionRepository.setTransactions(transactions)
+    }
+
+    companion object {
+        private const val EDIT_ACCOUNT_REQUEST_CODE = 1
+    }
 }
+

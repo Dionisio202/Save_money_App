@@ -1,12 +1,17 @@
 package com.edisoninnovations.save_money.adapter
+
+import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.edisoninnovations.save_money.databinding.ItemAccountBinding
 import com.edisoninnovations.save_money.ui.gallery.GalleryFragment
-import com.edisoninnovations.save_money.ui.home.HomeViewModel
 
-class AccountAdapter(private val accountSummaries: List<GalleryFragment.AccountSummary>) : RecyclerView.Adapter<AccountAdapter.AccountViewHolder>() {
+class AccountAdapter(
+    private val accountSummaries: List<GalleryFragment.AccountSummary>,
+    private val onAccountClick: (GalleryFragment.AccountSummary) -> Unit
+) : RecyclerView.Adapter<AccountAdapter.AccountViewHolder>() {
 
     class AccountViewHolder(val binding: ItemAccountBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -17,10 +22,14 @@ class AccountAdapter(private val accountSummaries: List<GalleryFragment.AccountS
 
     override fun onBindViewHolder(holder: AccountViewHolder, position: Int) {
         val accountSummary = accountSummaries[position]
-        holder.binding.txtTitle.text = accountSummary.title
-        holder.binding.txtIngreso.text = "Total Income: ${accountSummary.totalIncome}"
-        holder.binding.txtGasto.text = "Total Expense: ${accountSummary.totalExpense}"
-        holder.binding.txtMontoTotal.text = "Final Balance: ${accountSummary.finalBalance}"
+        holder.binding.txtTitle.text = "Cuenta :  ${accountSummary.title}"
+        holder.binding.txtIngreso.text = "Ingresos Totales: ${accountSummary.totalIncome}"
+        holder.binding.txtGasto.text = "Gastos Totales: ${accountSummary.totalExpense}"
+        holder.binding.txtMontoTotal.text = "Balance Final: ${accountSummary.finalBalance}"
+
+        holder.itemView.setOnClickListener {
+            onAccountClick(accountSummary)
+        }
     }
 
     override fun getItemCount(): Int = accountSummaries.size

@@ -22,6 +22,7 @@ import com.edisoninnovations.save_money.AddTransaction
 import com.edisoninnovations.save_money.CalendarPagerAdapter
 import com.edisoninnovations.save_money.DataManager.DateManager
 import com.edisoninnovations.save_money.R
+import com.edisoninnovations.save_money.models.TransactionRepository
 import com.edisoninnovations.save_money.supabase
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
@@ -204,6 +205,7 @@ class HomeFragment : Fragment() {
             if (userId != null) {
                 homeViewModel.setNeedsRefresh()
                 homeViewModel.getDataTransactions(userId)
+                TransactionRepository.setNeedsRefresh(true)
             }
         }
         if (requestCode == REQUEST_CODE_ADD_TRANSACTION && resultCode == AppCompatActivity.RESULT_OK) {
@@ -211,6 +213,7 @@ class HomeFragment : Fragment() {
             if (userId != null) {
                 homeViewModel.setNeedsRefresh()
                 homeViewModel.getDataTransactions(userId)
+                TransactionRepository.setNeedsRefresh(true)
             }
         }
     }
