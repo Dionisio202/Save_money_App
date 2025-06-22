@@ -1,4 +1,4 @@
-# 💰 Save Money App – Gestión de Finanzas Personales
+# 💰 Save Money App – Personal Finance Management
 
 <div align="center">
 
@@ -8,60 +8,60 @@
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Status](https://img.shields.io/badge/status-active-success.svg)
 
-**Una aplicación móvil intuitiva para el control total de tus finanzas personales**
+**An intuitive mobile application for complete control of your personal finances**
 
-[🚀 Características](#-características-principales) • [📱 Capturas](#-capturas-de-pantalla) • [🛠️ Instalación](#️-instalación-y-configuración) • [🗄️ Base de Datos](#️-estructura-de-la-base-de-datos)
+[🚀 Features](#-key-features) • [📱 Screenshots](#-screenshots) • [🛠️ Installation](#️-installation-and-setup) • [🗄️ Database](#️-database-structure)
 
 </div>
 
 ---
 
-## 📖 Descripción General
+## 📖 General Overview
 
-Save Money App es una aplicación móvil Android desarrollada en **Kotlin** que revoluciona la forma en que gestionas tus finanzas personales. Con una interfaz intuitiva y características avanzadas, te permite registrar ingresos, gastos, cuentas y visualizar tu situación financiera mediante gráficos interactivos y un calendario dinámico.
+Save Money App is an Android mobile application developed in **Kotlin** that revolutionizes the way you manage your personal finances. With an intuitive interface and advanced features, it allows you to record income, expenses, accounts and visualize your financial situation through interactive charts and a dynamic calendar.
 
-### 🎯 Características Clave
+### 🎯 Key Features
 
-- 📱 **Interfaz Nativa**: Desarrollada completamente en Kotlin para Android
-- ☁️ **Backend Robusto**: Integración completa con Supabase para datos y autenticación
-- 📊 **Visualización Avanzada**: Gráficos circulares y calendario financiero interactivo
-- 🔒 **Seguridad**: Autenticación segura con Supabase Auth
-- 📸 **Adjuntos**: Soporte para imágenes en transacciones
+- 📱 **Native Interface**: Fully developed in Kotlin for Android
+- ☁️ **Robust Backend**: Complete integration with Supabase for data and authentication
+- 📊 **Advanced Visualization**: Pie charts and interactive financial calendar
+- 🔒 **Security**: Secure authentication with Supabase Auth
+- 📸 **Attachments**: Support for images in transactions
 
 ---
 
-## ✨ Características Principales
+## ✨ Main Features
 
 <table>
 <tr>
 <td width="50%">
 
-### 📊 **Visualización Financiera**
-- ✅ Gráfico circular de ingresos vs gastos
-- ✅ Calendario interactivo con código de colores
-- ✅ Resumen mensual de transacciones
-- ✅ Dashboard principal con estadísticas
+### 📊 **Financial Visualization**
+- ✅ Pie chart of income vs expenses
+- ✅ Interactive calendar with color coding
+- ✅ Monthly transaction summary
+- ✅ Main dashboard with statistics
 
-### 💰 **Gestión de Transacciones**
-- ✅ Registro de ingresos y gastos
-- ✅ Categorización automática
-- ✅ Edición y eliminación de registros
-- ✅ Adjuntar imágenes a transacciones
+### 💰 **Transaction Management**
+- ✅ Recording income and expenses
+- ✅ Automatic categorization
+- ✅ Editing and deleting records
+- ✅ Attach images to transactions
 
 </td>
 <td width="50%">
 
-### 🏦 **Gestión de Cuentas**
-- ✅ Múltiples cuentas bancarias
-- ✅ Organización por tipo de cuenta
-- ✅ Seguimiento de saldos
-- ✅ Historial completo por cuenta
+### 🏦 **Account Management**
+- ✅ Multiple bank accounts
+- ✅ Organization by account type
+- ✅ Balance tracking
+- ✅ Complete history per account
 
-### 🔐 **Seguridad y Sincronización**
-- ✅ Autenticación segura con email
-- ✅ Sincronización en la nube
-- ✅ Backup automático de datos
-- ✅ Acceso desde múltiples dispositivos
+### 🔐 **Security and Synchronization**
+- ✅ Secure email authentication
+- ✅ Cloud synchronization
+- ✅ Automatic data backup
+- ✅ Multi-device access
 
 </td>
 </tr>
@@ -69,53 +69,52 @@ Save Money App es una aplicación móvil Android desarrollada en **Kotlin** que 
 
 ---
 
-## 📱 Capturas de Pantalla
+## 📱 Screenshots
 
-> **Dashboard principal con gráfico circular, calendario financiero y resumen de transacciones**
+> **Main dashboard with pie chart, financial calendar and transaction summary**
 
-### 📊 Visualizaciones Financieras
+### 📊 Financial Visualizations
 <table>
 <tr>
 <td width="33%" align="center">
 
-![Calendario](./calendar.jpeg)
-**Calendario Financiero**
-- Navegación por meses
-- Vista rápida de transacciones
-- Proporción ingresos/gastos
-
+![Calendar](./calendar.jpeg)
+**Financial Calendar**
+- Navigate by months
+- Quick transaction view
+- Income/expense ratio
 
 </td>
 <td width="33%" align="center">
 
-![Gráfico](./cuentas.jpeg)
-**Tipos de cuentas**
-- Valores divididois por cuenta
-- Ganacia o perdida por cuenta
-- Edicion de cuentas
+![Chart](./cuentas.jpeg)
+**Account Types**
+- Values divided by account
+- Profit or loss per account
+- Account editing
 </td>
 <td width="33%" align="center">
 
-![Transacciones](./add.jpeg)
-**Añadir Transacciones**
-- Añadir detalles
-- Añadir imagenes
-- Añadir tipo de cuenta
+![Transactions](./add.jpeg)
+**Add Transactions**
+- Add details
+- Add images
+- Add account type
 
 </td>
 </tr>
 </table>
 
-### ➕ Gestión de Transacciones
+### ➕ Transaction Management
 <div align="center">
-  <img src="./screenshots/add_transaction.png" alt="Agregar Transacción" width="300"/>
+  <img src="./screenshots/add_transaction.png" alt="Add Transaction" width="300"/>
 </div>
 
-> **Diálogo intuitivo para agregar ingresos o gastos con categorías y cuentas**
+> **Intuitive dialog to add income or expenses with categories and accounts**
 
 ---
 
-## 🏗️ Arquitectura del Sistema
+## 🏗️ System Architecture
 
 <table>
 <tr>
@@ -125,7 +124,7 @@ Save Money App es una aplicación móvil Android desarrollada en **Kotlin** que 
 ![UI Icon](https://img.shields.io/badge/-UI%20LAYER-blue?style=for-the-badge&logo=android)
 **Presentation Layer**
 
-Activities, Fragments y Adapters que manejan la interfaz de usuario
+Activities, Fragments and Adapters that handle the user interface
 
 </td>
 <td width="25%" align="center">
@@ -134,7 +133,7 @@ Activities, Fragments y Adapters que manejan la interfaz de usuario
 ![Logic Icon](https://img.shields.io/badge/-BUSINESS-green?style=for-the-badge&logo=gear)
 **Business Logic**
 
-DataManager y Utils que procesan la lógica de negocio
+DataManager and Utils that process business logic
 
 </td>
 <td width="25%" align="center">
@@ -143,7 +142,7 @@ DataManager y Utils que procesan la lógica de negocio
 ![Data Icon](https://img.shields.io/badge/-DATA%20LAYER-orange?style=for-the-badge&logo=database)
 **Data Layer**
 
-Modelos y cliente Supabase para persistencia
+Models and Supabase client for persistence
 
 </td>
 <td width="25%" align="center">
@@ -152,84 +151,84 @@ Modelos y cliente Supabase para persistencia
 ![Backend Icon](https://img.shields.io/badge/-BACKEND-red?style=for-the-badge&logo=supabase)
 **Backend Services**
 
-Supabase con PostgreSQL, Auth y Storage
+Supabase with PostgreSQL, Auth and Storage
 
 </td>
 </tr>
 </table>
 
-### 🗂️ Estructura del Proyecto
+### 🗂️ Project Structure
 
 ```
 app/
 ├── 📱 Presentation Layer
-│   ├── ui/                     # Fragments y pantallas
-│   │   ├── fragments/          # Fragmentos reutilizables
-│   │   └── dialogs/           # Diálogos personalizados
-│   ├── adapter/               # Adaptadores de RecyclerView
-│   └── MainActivity.kt        # Actividad principal
+│   ├── ui/                     # Fragments and screens
+│   │   ├── fragments/          # Reusable fragments
+│   │   └── dialogs/           # Custom dialogs
+│   ├── adapter/               # RecyclerView adapters
+│   └── MainActivity.kt        # Main activity
 │
 ├── 🧠 Business Logic
-│   ├── DataManager/           # Lógica de negocio
+│   ├── DataManager/           # Business logic
 │   │   ├── TransactionManager.kt
 │   │   ├── AccountManager.kt
 │   │   └── StatisticsManager.kt
-│   └── utils/                 # Funciones utilitarias
+│   └── utils/                 # Utility functions
 │       ├── DateUtils.kt
 │       ├── ColorUtils.kt
 │       └── ValidationUtils.kt
 │
 ├── 📊 Data Layer
-│   ├── models/                # Modelos de datos
+│   ├── models/                # Data models
 │   │   ├── Transaction.kt
 │   │   ├── Account.kt
 │   │   ├── Category.kt
 │   │   └── User.kt
-│   └── SupabaseClient.kt      # Cliente de conexión
+│   └── SupabaseClient.kt      # Connection client
 │
 └── 🎨 Resources
-    ├── res/layout/            # Layouts XML
-    ├── res/values/           # Colores, strings, estilos
-    └── res/drawable/         # Iconos y gráficos
+    ├── res/layout/            # XML layouts
+    ├── res/values/           # Colors, strings, styles
+    └── res/drawable/         # Icons and graphics
 ```
 
 ---
 
-## 🛠️ Instalación y Configuración
+## 🛠️ Installation and Setup
 
-### Requisitos Previos
-- Android Studio Electric Eel o superior
+### Prerequisites
+- Android Studio Electric Eel or higher
 - Kotlin 1.8+
-- SDK de Android API 24+
-- Cuenta activa de Supabase
+- Android SDK API 24+
+- Active Supabase account
 
-### 🚀 Configuración Rápida
+### 🚀 Quick Setup
 
 ```bash
-# 1️⃣ Clonar el repositorio
-git clone https://github.com/tu-usuario/save-money-app.git
+# 1️⃣ Clone the repository
+git clone https://github.com/your-user/save-money-app.git
 cd save-money-app
 
-# 2️⃣ Abrir en Android Studio
-# File → Open → Seleccionar carpeta del proyecto
+# 2️⃣ Open in Android Studio
+# File → Open → Select project folder
 
-# 3️⃣ Configurar Supabase
-# Crear archivo SupabaseClient.kt (ver sección de configuración)
+# 3️⃣ Configure Supabase
+# Create SupabaseClient.kt file (see configuration section)
 
-# 4️⃣ Sincronizar dependencias
+# 4️⃣ Sync dependencies
 # Build → Make Project
 
-# 5️⃣ Ejecutar aplicación
+# 5️⃣ Run application
 # Run → Run 'app'
 ```
 
-### 🔐 Configuración de Supabase
+### 🔐 Supabase Configuration
 
 <details>
-<summary><b>📄 Crear SupabaseClient.kt</b></summary>
+<summary><b>📄 Create SupabaseClient.kt</b></summary>
 
 ```kotlin
-// 📁 Ruta: app/src/main/java/com/edisoninnovations/save_money/SupabaseClient.kt
+// 📁 Path: app/src/main/java/com/edisoninnovations/save_money/SupabaseClient.kt
 
 package com.edisoninnovations.save_money
 
@@ -240,68 +239,68 @@ import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.storage.Storage
 
 val supabase = createSupabaseClient(
-    supabaseUrl = "TU_SUPABASE_URL_AQUI",
-    supabaseKey = "TU_SUPABASE_ANON_KEY_AQUI"
+    supabaseUrl = "YOUR_SUPABASE_URL_HERE",
+    supabaseKey = "YOUR_SUPABASE_ANON_KEY_HERE"
 ) {
     install(Postgrest)
     install(Auth)
     install(Storage)
-    // install(Functions) // Opcional para funciones RPC
+    // install(Functions) // Optional for RPC functions
 }
 ```
 
-> ⚠️ **Importante**: Este archivo está en `.gitignore` por seguridad. Debes crear tu propia versión con tus credenciales.
+> ⚠️ **Important**: This file is in `.gitignore` for security. You must create your own version with your credentials.
 
 </details>
 
 ---
 
-## 🗄️ Estructura de la Base de Datos
+## 🗄️ Database Structure
 
 <div align="center">
-  <img src="./database_schema.png" alt="Esquema de Base de Datos" />
+  <img src="./database_schema.png" alt="Database Schema" />
 </div>
 
-> **Diagrama completo del esquema relacional de la base de datos en Supabase**
+> **Complete diagram of the relational schema of the Supabase database**
 
-### 📊 Tablas Principales
+### 📊 Main Tables
 
 <details>
-<summary><b>🏦 Tabla: accounts</b></summary>
+<summary><b>🏦 Table: accounts</b></summary>
 
-| Campo | Tipo | Descripción | Restricciones |
-|-------|------|-------------|---------------|
-| `id_account` | `int4` | ID único de la cuenta | **PK**, Auto-increment |
-| `id_usuario` | `uuid` | ID del usuario propietario | **FK** → auth.users |
-| `title` | `text` | Nombre descriptivo de la cuenta | **NOT NULL** |
-| `created_at` | `timestamp` | Fecha de creación | **DEFAULT NOW()** |
+| Field | Type | Description | Constraints |
+|-------|------|-------------|-------------|
+| `id_account` | `int4` | Unique account ID | **PK**, Auto-increment |
+| `id_usuario` | `uuid` | Owner user ID | **FK** → auth.users |
+| `title` | `text` | Descriptive account name | **NOT NULL** |
+| `created_at` | `timestamp` | Creation date | **DEFAULT NOW()** |
 
-**Ejemplo de datos:**
+**Data example:**
 ```sql
 INSERT INTO accounts (id_usuario, title) VALUES 
-('123e4567-e89b-12d3-a456-426614174000', 'Cuenta Corriente Banco Pichincha'),
-('123e4567-e89b-12d3-a456-426614174000', 'Efectivo'),
-('123e4567-e89b-12d3-a456-426614174000', 'Tarjeta de Crédito Visa');
+('123e4567-e89b-12d3-a456-426614174000', 'Checking Account Banco Pichincha'),
+('123e4567-e89b-12d3-a456-426614174000', 'Cash'),
+('123e4567-e89b-12d3-a456-426614174000', 'Visa Credit Card');
 ```
 
 </details>
 
 <details>
-<summary><b>💰 Tabla: transacciones</b></summary>
+<summary><b>💰 Table: transacciones</b></summary>
 
-| Campo | Tipo | Descripción | Restricciones |
-|-------|------|-------------|---------------|
-| `id_transaccion` | `int4` | ID único de la transacción | **PK**, Auto-increment |
-| `id_categoria` | `int4` | Categoría asociada | **FK** → categorias.id |
-| `nota` | `text` | Descripción o nota | Opcional |
-| `tipo` | `text` | Tipo de transacción | **CHECK** ('income', 'expense') |
-| `cantidad` | `numeric(10,2)` | Monto de la transacción | **NOT NULL**, > 0 |
-| `id_usuario` | `uuid` | Usuario propietario | **FK** → auth.users |
-| `fecha` | `date` | Fecha de la transacción | **NOT NULL** |
-| `tiempo` | `time` | Hora de creación | **DEFAULT NOW()** |
-| `id_account` | `int4` | Cuenta asociada | **FK** → accounts.id_account |
+| Field | Type | Description | Constraints |
+|-------|------|-------------|-------------|
+| `id_transaccion` | `int4` | Unique transaction ID | **PK**, Auto-increment |
+| `id_categoria` | `int4` | Associated category | **FK** → categorias.id |
+| `nota` | `text` | Description or note | Optional |
+| `tipo` | `text` | Transaction type | **CHECK** ('income', 'expense') |
+| `cantidad` | `numeric(10,2)` | Transaction amount | **NOT NULL**, > 0 |
+| `id_usuario` | `uuid` | Owner user | **FK** → auth.users |
+| `fecha` | `date` | Transaction date | **NOT NULL** |
+| `tiempo` | `time` | Creation time | **DEFAULT NOW()** |
+| `id_account` | `int4` | Associated account | **FK** → accounts.id_account |
 
-**Índices optimizados:**
+**Optimized indexes:**
 ```sql
 CREATE INDEX idx_transacciones_usuario_fecha ON transacciones(id_usuario, fecha);
 CREATE INDEX idx_transacciones_tipo ON transacciones(tipo);
@@ -310,56 +309,56 @@ CREATE INDEX idx_transacciones_tipo ON transacciones(tipo);
 </details>
 
 <details>
-<summary><b>🏷️ Tabla: categorias</b></summary>
+<summary><b>🏷️ Table: categorias</b></summary>
 
-| Campo | Tipo | Descripción | Restricciones |
-|-------|------|-------------|---------------|
-| `id` | `int4` | ID único de categoría | **PK**, Auto-increment |
-| `nombre_categoria` | `varchar(100)` | Nombre de la categoría | **UNIQUE**, **NOT NULL** |
-| `tipo_categoria` | `text` | Tipo (income/expense/both) | **DEFAULT** 'both' |
-| `icono` | `varchar(50)` | Nombre del icono | Opcional |
+| Field | Type | Description | Constraints |
+|-------|------|-------------|-------------|
+| `id` | `int4` | Unique category ID | **PK**, Auto-increment |
+| `nombre_categoria` | `varchar(100)` | Category name | **UNIQUE**, **NOT NULL** |
+| `tipo_categoria` | `text` | Type (income/expense/both) | **DEFAULT** 'both' |
+| `icono` | `varchar(50)` | Icon name | Optional |
 
-**Categorías predefinidas:**
+**Predefined categories:**
 ```sql
 INSERT INTO categorias (nombre_categoria, tipo_categoria) VALUES 
-('Salario', 'income'),
+('Salary', 'income'),
 ('Freelance', 'income'),
-('Alimentación', 'expense'),
-('Transporte', 'expense'),
-('Entretenimiento', 'expense'),
-('Servicios', 'expense');
+('Food', 'expense'),
+('Transportation', 'expense'),
+('Entertainment', 'expense'),
+('Services', 'expense');
 ```
 
 </details>
 
 <details>
-<summary><b>🖼️ Tabla: transimages</b></summary>
+<summary><b>🖼️ Table: transimages</b></summary>
 
-| Campo | Tipo | Descripción | Restricciones |
-|-------|------|-------------|---------------|
-| `id_image` | `int4` | ID único de imagen | **PK**, Auto-increment |
-| `id_transaccion` | `int4` | Transacción asociada | **FK** → transacciones.id_transaccion |
-| `imagen` | `text` | Nombre del archivo en Storage | **NOT NULL** |
-| `uploaded_at` | `timestamp` | Fecha de subida | **DEFAULT NOW()** |
+| Field | Type | Description | Constraints |
+|-------|------|-------------|-------------|
+| `id_image` | `int4` | Unique image ID | **PK**, Auto-increment |
+| `id_transaccion` | `int4` | Associated transaction | **FK** → transacciones.id_transaccion |
+| `imagen` | `text` | File name in Storage | **NOT NULL** |
+| `uploaded_at` | `timestamp` | Upload date | **DEFAULT NOW()** |
 
 </details>
 
 <details>
-<summary><b>👤 Tabla: profile</b></summary>
+<summary><b>👤 Table: profile</b></summary>
 
-| Campo | Tipo | Descripción | Restricciones |
-|-------|------|-------------|---------------|
-| `user_id` | `uuid` | ID del usuario | **PK**, **FK** → auth.users |
-| `name` | `text` | Nombre del usuario | Opcional |
-| `last_name` | `text` | Apellido del usuario | Opcional |
-| `avatar_url` | `text` | URL del avatar | Opcional |
-| `created_at` | `timestamp` | Fecha de registro | **DEFAULT NOW()** |
+| Field | Type | Description | Constraints |
+|-------|------|-------------|-------------|
+| `user_id` | `uuid` | User ID | **PK**, **FK** → auth.users |
+| `name` | `text` | User name | Optional |
+| `last_name` | `text` | User last name | Optional |
+| `avatar_url` | `text` | Avatar URL | Optional |
+| `created_at` | `timestamp` | Registration date | **DEFAULT NOW()** |
 
 </details>
 
 ---
 
-## ⚙️ Funciones RPC (Stored Procedures)
+## ⚙️ RPC Functions (Stored Procedures)
 
 ### 🔍 get_transactions_by_date_and_user
 
@@ -447,24 +446,24 @@ LANGUAGE plpgsql
 SECURITY INVOKER
 AS $$
 BEGIN
-    -- Actualizar transacciones: establecer id_account a NULL
+    -- Update transactions: set id_account to NULL
     UPDATE transacciones
     SET id_account = NULL
     WHERE id_account = account_id_to_delete;
 
-    -- Eliminar la cuenta
+    -- Delete the account
     DELETE FROM accounts
     WHERE id_account = account_id_to_delete;
     
-    -- Log de la operación
-    RAISE NOTICE 'Cuenta % eliminada y transacciones actualizadas', account_id_to_delete;
+    -- Operation log
+    RAISE NOTICE 'Account % deleted and transactions updated', account_id_to_delete;
 END;
 $$;
 ```
 
 ---
 
-## 🛡️ Tecnologías Utilizadas
+## 🛡️ Technologies Used
 
 <div align="center">
 
@@ -476,7 +475,7 @@ $$;
 
 </div>
 
-### 🔧 Dependencias Principales
+### 🔧 Main Dependencies
 
 ```kotlin
 dependencies {
@@ -486,10 +485,10 @@ dependencies {
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     
-    // ViewPager2 para calendario
+    // ViewPager2 for calendar
     implementation("androidx.viewpager2:viewpager2:1.0.0")
     
-    // Gráficos - MPAndroidChart
+    // Charts - MPAndroidChart
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     
     // Supabase
@@ -505,7 +504,7 @@ dependencies {
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
     
-    // ViewModel y LiveData
+    // ViewModel and LiveData
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     
@@ -518,27 +517,27 @@ dependencies {
 
 ---
 
-## 🔐 Configuración de Seguridad
+## 🔐 Security Configuration
 
 ### 🛡️ Row Level Security (RLS)
 
 ```sql
--- Habilitar RLS en todas las tablas
+-- Enable RLS on all tables
 ALTER TABLE transacciones ENABLE ROW LEVEL SECURITY;
 ALTER TABLE accounts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE transimages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE profile ENABLE ROW LEVEL SECURITY;
 
--- Políticas de seguridad para transacciones
-CREATE POLICY "Usuarios solo ven sus transacciones" ON transacciones
+-- Security policies for transactions
+CREATE POLICY "Users only see their transactions" ON transacciones
     FOR ALL USING (auth.uid() = id_usuario);
 
--- Políticas de seguridad para cuentas
-CREATE POLICY "Usuarios solo ven sus cuentas" ON accounts
+-- Security policies for accounts
+CREATE POLICY "Users only see their accounts" ON accounts
     FOR ALL USING (auth.uid() = id_usuario);
 
--- Políticas de seguridad para imágenes
-CREATE POLICY "Usuarios solo ven imágenes de sus transacciones" ON transimages
+-- Security policies for images
+CREATE POLICY "Users only see images from their transactions" ON transimages
     FOR ALL USING (
         EXISTS (
             SELECT 1 FROM transacciones t 
@@ -551,37 +550,37 @@ CREATE POLICY "Usuarios solo ven imágenes de sus transacciones" ON transimages
 ### 🔒 Storage Bucket Configuration
 
 ```sql
--- Crear bucket para imágenes
+-- Create bucket for images
 INSERT INTO storage.buckets (id, name, public) VALUES ('imagenes', 'imagenes', true);
 
--- Política de upload para imágenes
-CREATE POLICY "Usuarios pueden subir sus imágenes" ON storage.objects
+-- Upload policy for images
+CREATE POLICY "Users can upload their images" ON storage.objects
     FOR INSERT WITH CHECK (bucket_id = 'imagenes' AND auth.uid()::text = (storage.foldername(name))[1]);
 
--- Política de visualización
-CREATE POLICY "Imágenes públicas de lectura" ON storage.objects
+-- View policy
+CREATE POLICY "Public read access to images" ON storage.objects
     FOR SELECT USING (bucket_id = 'imagenes');
 ```
 
 ---
 
-## 🎨 Características de UI/UX
+## 🎨 UI/UX Features
 
-### 🎨 Sistema de Colores
+### 🎨 Color System
 
 ```kotlin
-// Colores del tema principal
+// Main theme colors
 object AppColors {
-    val income = Color.parseColor("#4CAF50")      // Verde para ingresos
-    val expense = Color.parseColor("#F44336")     // Rojo para gastos
-    val mixed = Color.parseColor("#FF9800")       // Naranja para días mixtos
-    val primary = Color.parseColor("#2196F3")     // Azul principal
-    val primaryDark = Color.parseColor("#1976D2") // Azul oscuro
-    val accent = Color.parseColor("#03DAC5")      // Verde agua
+    val income = Color.parseColor("#4CAF50")      // Green for income
+    val expense = Color.parseColor("#F44336")     // Red for expenses
+    val mixed = Color.parseColor("#FF9800")       // Orange for mixed days
+    val primary = Color.parseColor("#2196F3")     // Main blue
+    val primaryDark = Color.parseColor("#1976D2") // Dark blue
+    val accent = Color.parseColor("#03DAC5")      // Aqua green
 }
 ```
 
-### 📊 Gráfico Circular Dinámico
+### 📊 Dynamic Pie Chart
 
 ```kotlin
 private fun setupPieChart() {
@@ -591,15 +590,15 @@ private fun setupPieChart() {
         setExtraOffsets(5f, 10f, 5f, 5f)
         dragDecelerationFrictionCoef = 0.95f
         
-        // Configuración de centro
-        centerText = "Balance\nFinanciero"
+        // Center configuration
+        centerText = "Financial\nBalance"
         setCenterTextSize(16f)
         setCenterTextColor(ContextCompat.getColor(context, R.color.text_primary))
         
-        // Animaciones
+        // Animations
         animateY(1400, Easing.EaseInOutQuad)
         
-        // Configuración de leyenda
+        // Legend configuration
         legend.apply {
             verticalAlignment = Legend.LegendVerticalAlignment.TOP
             horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
@@ -613,9 +612,9 @@ private fun setupPieChart() {
 }
 ```
 
-### 📅 Calendario Interactivo
+### 📅 Interactive Calendar
 
-El calendario utiliza `ViewPager2` con fragmentos personalizados para cada mes:
+The calendar uses `ViewPager2` with custom fragments for each month:
 
 ```kotlin
 class CalendarAdapter(
@@ -637,9 +636,9 @@ class CalendarAdapter(
 
 ---
 
-## 📈 Funcionalidades Avanzadas
+## 📈 Advanced Features
 
-### 🔍 Búsqueda y Filtros
+### 🔍 Search and Filters
 
 ```kotlin
 class TransactionFilter {
@@ -653,7 +652,7 @@ class TransactionFilter {
 }
 ```
 
-### 📊 Reportes y Estadísticas
+### 📊 Reports and Statistics
 
 ```kotlin
 data class FinancialSummary(
@@ -667,7 +666,7 @@ data class FinancialSummary(
 )
 ```
 
-### 🔄 Sincronización Offline
+### 🔄 Offline Synchronization
 
 ```kotlin
 class OfflineTransactionManager {
@@ -692,127 +691,75 @@ class OfflineTransactionManager {
 
 ---
 
-## 🚀 Roadmap y Próximas Características
+## 🚀 Roadmap and Upcoming Features
 
-### 📋 Próximas Actualizaciones
+### 📋 Next Updates
 
 <table>
 <tr>
 <td width="50%">
 
-### 🎯 **Versión 2.0**
-- [ ] 📊 Reportes avanzados en PDF
-- [ ] 🔔 Notificaciones de presupuesto
-- [ ] 💹 Análisis de tendencias con IA
-- [ ] 🌙 Modo oscuro completo
-- [ ] 📱 Widget para pantalla principal
+### 🎯 **Version 2.0**
+- [ ] 📊 Advanced PDF reports
+- [ ] 🔔 Budget notifications
+- [ ] 💹 AI trend analysis
+- [ ] 🌙 Complete dark mode
+- [ ] 📱 Home screen widget
 
 </td>
 <td width="50%">
 
-### 🎯 **Versión 2.5**
-- [ ] 🔄 Sincronización multi-dispositivo
-- [ ] 💳 Integración con bancos
-- [ ] 📈 Análisis predictivo
-- [ ] 🎨 Temas personalizables
-- [ ] 🗣️ Comandos de voz
+### 🎯 **Version 2.5**
+- [ ] 🔄 Multi-device synchronization
+- [ ] 💳 Bank integration
+- [ ] 📈 Predictive analysis
+- [ ] 🎨 Customizable themes
+- [ ] 🗣️ Voice commands
 
 </td>
 </tr>
 </table>
 
-### 💡 Ideas de la Comunidad
-- Integración con Google Drive para backups
-- Soporte para múltiples monedas
-- Recordatorios de pagos recurrentes
-- Modo familiar para gastos compartidos
-- Exportación a Excel/CSV
+### 💡 Community Ideas
+- Google Drive integration for backups
+- Multi-currency support
+- Recurring payment reminders
+- Family mode for shared expenses
+- Excel/CSV export
 
 ---
 
-## 🤝 Contribuciones
+## 🤝 Contributions
 
-¡Las contribuciones son bienvenidas! Aquí te explicamos cómo puedes ayudar:
+Contributions are welcome! Here's how you can help:
 
-### 🛠️ Cómo Contribuir
+### 🛠️ How to Contribute
 
-1. 🍴 **Fork** el repositorio
-2. 🌱 **Crea** una rama para tu característica (`git checkout -b feature/NuevaCaracteristica`)
-3. 💾 **Commit** tus cambios (`git commit -m 'Agregar nueva característica'`)
-4. 📤 **Push** a la rama (`git push origin feature/NuevaCaracteristica`)
-5. 🔄 **Abre** un Pull Request
+1. 🍴 **Fork** the repository
+2. 🌱 **Create** a branch for your feature (`git checkout -b feature/NewFeature`)
+3. 💾 **Commit** your changes (`git commit -m 'Add new feature'`)
+4. 📤 **Push** to the branch (`git push origin feature/NewFeature`)
+5. 🔄 **Open** a Pull Request
 
-### 🐛 Reportar Bugs
+### 🐛 Report Bugs
 
-Si encuentras un bug, por favor abre un issue con:
-- Descripción detallada del problema
-- Pasos para reproducir el bug
-- Versión de Android y dispositivo
-- Screenshots si es posible
+If you find a bug, please open an issue with:
+- Detailed description of the problem
+- Steps to reproduce the bug
+- Android version and device
+- Screenshots if possible
 
-### 💡 Sugerir Características
+### 💡 Suggest Features
 
-¿Tienes una idea genial? ¡Nos encantaría escucharla!
-- Abre un issue con la etiqueta `enhancement`
-- Describe la funcionalidad deseada
-- Explica el caso de uso
-
----
-
-## 📄 Licencia
-
-Este proyecto está licenciado bajo la Licencia MIT - ver el archivo [LICENSE.md](LICENSE.md) para más detalles.
-
-```
-MIT License
-
-Copyright (c) 2024 Edison Innovations
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-```
-
----
-
-## 🙏 Agradecimientos
-
-- **Supabase** por proporcionar una plataforma backend robusta y fácil de usar
-- **MPAndroidChart** por la excelente librería de gráficos
-- **Material Design** por las guías de diseño y componentes
-- **Comunidad de Kotlin** por el lenguaje y herramientas excepcionales
-- **Todos los beta testers** que ayudaron a mejorar la aplicación
-
----
-
-## 📞 Contacto y Soporte
-
-<div align="center">
-
-### ¿Necesitas ayuda o tienes preguntas?
-
-📧 **Email**: edison.innovations.dev@gmail.com  
-🐛 **Issues**: [GitHub Issues](https://github.com/tu-usuario/save-money-app/issues)  
-📱 **Telegram**: [@EdisonInnovations](https://t.me/EdisonInnovations)  
-
-</div>
+Do you have a great idea? We'd love to hear it!
+- Open an issue with the `enhancement` label
+- Describe the desired functionality
+- Explain the use case
 
 ---
 
 <div align="center">
 
-### ⭐ ¡Dale una estrella a este repositorio si te ha sido útil!
-
-**Desarrollado con ❤️ y ☕ para la comunidad de finanzas personales**
-
-![GitHub Stars](https://img.shields.io/github/stars/tu-usuario/save-money-app?style=social)
-![GitHub Forks](https://img.shields.io/github/forks/tu-usuario/save-money-app?style=social)
-![GitHub Watchers](https://img.shields.io/github/watchers/tu-usuario/save-money-app?style=social)
+### ⭐ Give this repository a star if it has been useful to you!
 
 </div>
