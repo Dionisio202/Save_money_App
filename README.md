@@ -97,8 +97,8 @@ Save Money App es una aplicación móvil Android desarrollada en **Kotlin** que 
 <td width="33%" align="center">
 
 ![Transacciones](./add.jpeg)
-**Lista de Transacciones**
-- Añadir notas y tipos de transaccion
+**Añadir Transacciones**
+- Añadir detalles
 - Añadir imagenes
 - Añadir tipo de cuenta
 
