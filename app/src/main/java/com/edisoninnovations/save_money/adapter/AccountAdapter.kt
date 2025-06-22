@@ -22,10 +22,15 @@ class AccountAdapter(
 
     override fun onBindViewHolder(holder: AccountViewHolder, position: Int) {
         val accountSummary = accountSummaries[position]
+
+        val formattedTotalIncome = String.format("%.2f", accountSummary.totalIncome)
+        val formattedTotalExpense = String.format("%.2f", accountSummary.totalExpense)
+        val formattedFinalBalance = String.format("%.2f", accountSummary.finalBalance)
+
         holder.binding.txtTitle.text = "Cuenta :  ${accountSummary.title}"
-        holder.binding.txtIngreso.text = "Ingresos Totales: ${accountSummary.totalIncome}"
-        holder.binding.txtGasto.text = "Gastos Totales: ${accountSummary.totalExpense}"
-        holder.binding.txtMontoTotal.text = "Balance Final: ${accountSummary.finalBalance}"
+        holder.binding.txtIngreso.text = "Ingresos Totales: ${formattedTotalIncome}"
+        holder.binding.txtGasto.text = "Gastos Totales: ${formattedTotalExpense}"
+        holder.binding.txtMontoTotal.text = "Balance Final: ${formattedFinalBalance}"
 
         holder.itemView.setOnClickListener {
             onAccountClick(accountSummary)

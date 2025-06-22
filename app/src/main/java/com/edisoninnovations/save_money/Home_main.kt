@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -19,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.navOptions
 import com.edisoninnovations.save_money.databinding.ActivityHomeMainBinding
+import com.edisoninnovations.save_money.utils.LoadingDialog
 import io.github.jan.supabase.gotrue.auth
 import kotlinx.coroutines.launch
 
@@ -26,14 +28,14 @@ class Home_main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLi
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityHomeMainBinding
-
+    private lateinit var loadingDialog: LoadingDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setSupportActionBar(binding.appBarHomeMain.toolbar)
-
+        loadingDialog = LoadingDialog(this)
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_home_main)
@@ -105,10 +107,17 @@ if(userEmail==null){
 
     private fun logout() {
         lifecycleScope.launch {
-            supabase.auth.signOut()
-            val intent = Intent(this@Home_main, MainActivity::class.java)
-            startActivity(intent)
-            finish()
+            loadingDialog.startLoading()
+            try {
+
+                supabase.auth.signOut()
+                val intent = Intent(this@Home_main, MainActivity::class.java)
+                startActivity(intent)
+                loadingDialog.isDismiss()
+            }catch (e: Exception){
+                Toast.makeText(this@Home_main, e.message, Toast.LENGTH_LONG).show()
+                loadingDialog.isDismiss()
+            }
         }
     }
 }

@@ -24,6 +24,7 @@ import com.edisoninnovations.save_money.DataManager.DateManager
 import com.edisoninnovations.save_money.R
 import com.edisoninnovations.save_money.models.TransactionRepository
 import com.edisoninnovations.save_money.supabase
+import com.edisoninnovations.save_money.utils.FragmentLoadingDialog
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
@@ -41,7 +42,7 @@ class HomeFragment : Fragment() {
     private lateinit var calendarAdapter: CalendarPagerAdapter
     private lateinit var pieChart: PieChart
     private val homeViewModel: HomeViewModel by viewModels()
-
+    private lateinit var loadingDialog: FragmentLoadingDialog
     companion object {
         const val REQUEST_CODE_HOME_INFORMATION = 2
         private const val REQUEST_CODE_ADD_TRANSACTION = 1
@@ -52,7 +53,7 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
-
+        loadingDialog = FragmentLoadingDialog(requireActivity())
         initWidgets(view)
 
         // Definir tus eventos aquí
@@ -93,7 +94,10 @@ class HomeFragment : Fragment() {
         val userEmail = supabase.auth.currentUserOrNull()?.email
         val userId = supabase.auth.currentUserOrNull()?.id
         if (userId != null) {
-            homeViewModel.getDataTransactions(userId)
+            loadingDialog.startLoading()
+            homeViewModel.getDataTransactions(userId){
+                loadingDialog.isDismiss()
+            }
         } else {
             println("Usuario no autenticado")
         }
@@ -204,7 +208,9 @@ class HomeFragment : Fragment() {
             val userId = supabase.auth.currentUserOrNull()?.id
             if (userId != null) {
                 homeViewModel.setNeedsRefresh()
-                homeViewModel.getDataTransactions(userId)
+                homeViewModel.getDataTransactions(userId){
+                    loadingDialog.isDismiss()
+                }
                 TransactionRepository.setNeedsRefresh(true)
             }
         }
@@ -212,7 +218,9 @@ class HomeFragment : Fragment() {
             val userId = supabase.auth.currentUserOrNull()?.id
             if (userId != null) {
                 homeViewModel.setNeedsRefresh()
-                homeViewModel.getDataTransactions(userId)
+                homeViewModel.getDataTransactions(userId){
+                    loadingDialog.isDismiss()
+                }
                 TransactionRepository.setNeedsRefresh(true)
             }
         }

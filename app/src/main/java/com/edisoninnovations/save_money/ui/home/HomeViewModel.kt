@@ -53,9 +53,10 @@ class HomeViewModel : ViewModel() {
     )
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun getDataTransactions(userId: String) {
+    fun getDataTransactions(userId: String,onComplete: () -> Unit) {
         if (!needsRefresh && _transactions.value != null && _eventDates.value != null && _totalIncome.value != null && _totalExpense.value != null) {
             // Data already loaded and no refresh needed, no need to fetch again
+            onComplete()
             return
         }
 
@@ -124,10 +125,15 @@ class HomeViewModel : ViewModel() {
                 } catch (error: Exception) {
                     error.printStackTrace()
                     println("$$$$$$$$$$$$$$--"+error.message)
-                }
+                }finally {
+                    withContext(Dispatchers.Main) {
+                        onComplete()
+                    }
             }
         }
-    }
+    }else {
+            onComplete()
+        }}
     @JsonClass(generateAdapter = true)
     data class Account(
         val title: String?,
