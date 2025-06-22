@@ -83,7 +83,7 @@ Save Money App es una aplicación móvil Android desarrollada en **Kotlin** que 
 <tr>
 <td width="33%" align="center">
 
-![Calendario](./screenshots/calendar.jpeg)
+![Calendario](./calendar.jpeg)
 **Calendario Financiero**
 - Eventos codificados por color
 - Navegación por meses
