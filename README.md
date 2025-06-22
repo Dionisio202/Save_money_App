@@ -95,9 +95,10 @@ Save Money App es una aplicación móvil Android desarrollada en **Kotlin** que 
 </td>
 <td width="33%" align="center">
 
-![Gráfico](./screenshots/chart.png)
-**Gráfico Circular**
-
+![Gráfico](./cuentas.jpeg)
+**Tipos de cuentas**
+- Valores divididois por cuenta
+- Ganacia o perdida por cuenta
 
 </td>
 <td width="33%" align="center">
